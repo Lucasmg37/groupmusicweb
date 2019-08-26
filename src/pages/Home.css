@@ -1,0 +1,47 @@
+.listagem ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 30px;
+    margin-top: 50px; 
+}
+
+.listagem ul li {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.listagem ul li:hover {
+    transform: translateY(-10px);
+}
+
+.listagem ul li img{
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+}
+
+.title-section {
+    padding: 20px;
+    border-bottom: 2px solid #eee;
+    color: #eee
+}
+
+.listagem ul li .footer{
+    flex: 1;
+    background: #fff;
+    border-radius: 0 0 5px 5px;
+    text-align: left;
+    padding: 10px 5px;
+}
+
+.listagem ul li .footer strong{
+    font-size: 1.2em;
+    color: #222;
+}
+
+.listagem ul li .footer p {
+    font-size: .8em;
+    line-height: 20px;
+}
