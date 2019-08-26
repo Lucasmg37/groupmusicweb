@@ -11,6 +11,7 @@ export default function Login( {history} ){
 
     useEffect( () => {
         localStorage.removeItem("st_token");
+        localStorage.removeItem("id_usuario");
     }, [])
 
     async function handleSumbmit(e){

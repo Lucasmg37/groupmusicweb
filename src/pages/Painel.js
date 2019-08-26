@@ -14,18 +14,32 @@ import Spotify from "./Spotify";
 import Library from "./Library";
 
 
-export default function Painel() {
+export default function Painel({history}) {
 
     const [integracao, setIntegracao] = useState({});
 
+    function logout(){
+        localStorage.removeItem("st_token");
+        localStorage.removeItem("id_usuario");
+        history.push("/login")
+    }
+
     useEffect(() => {
+
+        async function verificaUsuario(){
+            const response = await api.get('/Usuario/null/verificaautenticacao').then(response => {
+
+            }).catch(response => {
+                history.push("/login");
+            });
+        }
 
         async function verificaIntegracao() {
             const response = await api.get('/Spotify/null/VerificaIntegracao');
             setIntegracao(response.data.data);
 
         }
-
+        verificaUsuario(); 
         verificaIntegracao();
 
     }, []);
@@ -57,9 +71,7 @@ export default function Painel() {
                         <li><i className="fa fa-user"></i> <span>Perfil</span></li>
                     </Link>
 
-                    <Link to={"/login/"}>
-                        <li><i className="fa fa-door-open"></i> <span>Sair</span></li>
-                    </Link>
+                        <li onClick={logout}><i className="fa fa-door-open"></i> <span>Sair</span></li>
                 </ul>
             </div>
 
