@@ -18,9 +18,8 @@ export default function Perfil({ match, props }) {
     const [id_config, setId_config] = useState('');
     const [bl_atualizaspotify, setBl_atualizaspotify] = useState(false);
     const [bl_buscamudancasspotify, setBl_buscamudancasspotify] = useState(false);
-
-
-
+    const [bl_deleteplaylistspotify, setBl_deleteplaylistspotify] = useState(false);
+    
     useEffect(() => {
 
         async function verificaIntegracao() {
@@ -31,7 +30,8 @@ export default function Perfil({ match, props }) {
                 setBl_sincronizaclone(response.data.data.bl_sincronizaclone);
                 setBl_atualizaspotify(response.data.data.bl_atualizaspotify);
                 setId_config(response.data.data.id_config);
-                setBl_buscamudancasspotify(response.data.data.bl_buscamudancasspotify)
+                setBl_buscamudancasspotify(response.data.data.bl_buscamudancasspotify);
+                setBl_deleteplaylistspotify(response.data.data.bl_deleteplaylistspotify);
             });
 
         }
@@ -54,7 +54,8 @@ export default function Perfil({ match, props }) {
             id_config,
             bl_atualizaspotify,
             bl_buscamudancasspotify,
-            bl_sincronizaclone
+            bl_sincronizaclone,
+            bl_deleteplaylistspotify
         })
     }
 
@@ -104,6 +105,15 @@ export default function Perfil({ match, props }) {
                         checked={bl_buscamudancasspotify}
                     ></Toggle>
                     <label for="bl_buscamudancasspotify">Buscar mudanças em playlists do spotify automáticamente</label>
+                </div>
+
+                <div className="input-toggle">
+                    <Toggle
+                        name="bl_deleteplaylistspotify"
+                        onChangeFunction={() => setBl_deleteplaylistspotify(!bl_deleteplaylistspotify)}
+                        checked={bl_deleteplaylistspotify}
+                    ></Toggle>
+                    <label for="bl_buscamudancasspotify">Deletar playlist do Spotify.</label>
                 </div>
             
                 <div> <button className="desconect-spotify"> Desconectar Spotify</button> </div>

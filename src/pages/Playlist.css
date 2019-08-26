@@ -117,3 +117,7 @@
     align-content: center;
     justify-content: center;
 }
+
+.info-music >* i{
+    margin: 0 3px;
+}
