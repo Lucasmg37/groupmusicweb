@@ -5,12 +5,14 @@ import logo from '../assets/img/logo.svg';
 import './Home.css';
 
 import api from '../services/api';
+import Loading from '../components/Loading';
 
 
 export default function Home({ history }) {
 
     const [playlists, setPlaylists] = useState([]);
     const [usuario, setUsuario] = useState({});
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
 
@@ -22,6 +24,7 @@ export default function Home({ history }) {
         async function loadTopPlaylists() {
             const response = await api.get('/Playlist');
             setPlaylists(response.data.data);
+            setLoaded(true);
         }
 
         getUser();
@@ -35,34 +38,41 @@ export default function Home({ history }) {
 
     return (
         <div className='container-area'>
-            <div className="area-busca">
-                <h1>Para você, {usuario.st_nome}!</h1>
-            </div>
-
+            {usuario.st_nome && (
+                <div className="area-busca animate-up-opacity">
+                    <h1>Para você, {usuario.st_nome}!</h1>
+                </div>
+            )}
+           
             <div className='listagem'>
+                {loaded ? (
 
-                {playlists !== undefined  && playlists.length > 0 && (
+<div>
+{playlists !== undefined  && playlists.length > 0 && (
 
-                    <ul>
+    <ul>
 
-                        {playlists.map(playlist => (
+        {playlists.map(playlist => (
 
-                            <li key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
-                                <img src={playlist.st_capa} />
-                                <div className='footer'>
-                                    <strong>{playlist.st_nome}</strong>
-                                    <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment>
-                                    </p>
+            <li className="animate-up-opacity" key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
+                <img src={playlist.st_capa} />
+                <div className='footer'>
+                    <strong>{playlist.st_nome}</strong>
+                    <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment>
+                    </p>
 
-                                </div>
-                            </li>
+                </div>
+            </li>
 
-                        ))}
+        ))}
 
-                    </ul>
-                )}
-            </div>
+    </ul>
+)}
+</div>
 
+                ) : (<Loading></Loading> )}
+               
+</div>
         </div>
     );
 

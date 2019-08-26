@@ -45,3 +45,19 @@
     font-size: .8em;
     line-height: 20px;
 }
+
+.animate-up-opacity {
+    animation: .8s animate-up-opacity ease-in-out;
+}
+
+@keyframes animate-up-opacity{
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
