@@ -39,17 +39,15 @@ export default function Library({history}) {
                                 <div className="info-music">
                                     <strong>{playlist.st_nome}</strong>
                                     <p>Data de criação: <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment><br />
-                                        Número de músicas: {playlist.nu_music}
+                                        Número de músicas: {playlist.nu_music} <br/>
+                                    { playlist.bl_sincronizado && (<i className="fab fa-spotify"></i>)}
+                                    { playlist.bl_privada ? ( <i className="fa fa-lock"></i>) : (<i className="fa fa-unlock "></i>)}
+                                 
                                     </p>
                                 </div>
 
                                 <div className="info-icons">
-
-                                    { playlist.bl_sincronizado ? (<i className="fab fa-spotify fa-2x"></i>) : <i></i>}
-                                    { playlist.bl_privada ? ( <i className="fa fa-lock fa-2x"></i>) : (<i className="fa fa-unlock fa-2x"></i>)}
-                                   <i className="fa fa-ellipsis-v fa-2x"></i>
-                                   
-                                
+                                      <i className="fa fa-ellipsis-v fa-2x"></i>
                                 </div>
 
                             </li>
