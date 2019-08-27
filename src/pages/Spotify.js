@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import Loading from '../components/Loading';
 
 export default function Spotify() {
 
     const [musicsPlaylist, setMusicsPlaylist] = useState([]);
+    const [loaded, setLoaded] = useState(false);
 
     async function sincrinizarSpotifyToList(id) {
 
@@ -31,6 +33,7 @@ export default function Spotify() {
         async function loadPlaylist() {
             const response = await api.get("/Spotify/NULL/getPlaylistsSpotifybyUser");
             setMusicsPlaylist(response.data.data);
+            setLoaded(true);
         }
 
         loadPlaylist();
@@ -45,40 +48,43 @@ export default function Spotify() {
                 <h1>Suas Playlist do Spotify</h1>
             </div>
 
+            {loaded ? (
+                <div className="list-playlist">
+                    {musicsPlaylist.length > 0 ? (
+                        <ul>
+                            {musicsPlaylist.map(music => (
+                                <li key={music.id_musicplaylist}>
+                                    <img src={music.images[0].url} />
+                                    <div className="info-music">
+                                        <strong>{music.name}</strong>
+                                    </div>
 
-            <div className="list-playlist">
-                {musicsPlaylist.length > 0 ? (
-                    <ul>
-                        {musicsPlaylist.map(music => (
-                            <li key={music.id_musicplaylist}>
-                                <img src={music.images[0].url} />
-                                <div className="info-music">
-                                    <strong>{music.name}</strong>
-                                </div>
+                                    <div className="actions-buttons">
+                                        {music.bl_sincronizado == 1 ? (
+                                            <div></div>
+                                        ) : (
+                                                (
+                                                    <button onClick={() => sincrinizarSpotifyToList(music.id)}>
+                                                        {+music.bl_sincronizing === 1 ? (
+                                                            <span><i className="fa fa-sync animate-rotate"></i> Sincronizando</span>
+                                                        ) : (
+                                                                <span> <i className="fa fa-sync"></i> Sincronizar</span>
+                                                            )}
+                                                    </button>
+                                                )
+                                            )}
 
-                                <div className="actions-buttons">
-                                    {music.bl_sincronizado == 1 ? (
-                                        <div></div>
-                                    ) : (
-                                            (
-                                                <button onClick={() => sincrinizarSpotifyToList(music.id)}>
-                                                    {+music.bl_sincronizing === 1 ? (
-                                                        <span><i className="fa fa-sync animate-rotate"></i> Sincronizando</span>
-                                                    ) : (
-                                                            <span> <i className="fa fa-sync"></i> Sincronizar</span>
-                                                        )}
-                                                </button>
-                                            )
-                                        )}
+                                    </div>
 
-                                </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (<div className="empty-response">Nenhuma playlist encontrada :)</div>)}
+                </div>
+            ) : (
+                    <Loading></Loading>
+                )}
 
-                            </li>
-                        ))}
-                    </ul>
-                ) : (<div className="empty-response">Nenhuma música nesta playlist!</div>)}
-
-            </div>
 
         </div>
     );
