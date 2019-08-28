@@ -9,7 +9,7 @@ export default function Library({ history }) {
     const [loaded, setLoaded] = useState(false);
 
     const editPlaylist = function (id_playlist) {
-        history.push("/playlist/" + id_playlist);
+      //  history.push("/playlist/" + id_playlist);
     }
 
     useEffect(() => {

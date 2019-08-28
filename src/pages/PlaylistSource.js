@@ -3,11 +3,14 @@ import Moment from "react-moment";
 import api from "../services/api";
 import Loading from "../components/Loading";
 
-export default function PlaylistSource() {
+export default function PlaylistSource({history}) {
 
     const [playlists, setPlaylists] = useState({});
     const [loaded, setLoaded] = useState(false);
 
+    function openPlaylist(id_playlist){
+        history.push("/playlist/" + id_playlist);
+    }
 
     useEffect(() => {
         async function buscaTopPlaylists() {
@@ -26,12 +29,12 @@ export default function PlaylistSource() {
     }
 
     return (
-        <div>
-            <div className="container-area">
+        <div className="container-area">
+            <div >
                 <div className="area-busca">
                     <h1>Descubra novas playlists</h1>
                     <input
-                    placeholder="Digite aqui um nome de playlist"
+                        placeholder="Digite aqui um nome de playlist..."
                         type="text"
                         onKeyUp={e => buscaPlaylist(e.target.value)} />
                 </div>
@@ -42,7 +45,7 @@ export default function PlaylistSource() {
                     {playlists !== undefined && playlists.length > 0 ? (
                         <ul>
                             {playlists.map(playlist => (
-                                <li key={playlist.id_playlist} >
+                                <li onClick={() => openPlaylist(playlist.id_playlist)} key={playlist.id_playlist} >
                                     <img src={playlist.st_capa} />
                                     <div className="info-music">
                                         <strong>{playlist.st_nome}</strong>
@@ -53,11 +56,6 @@ export default function PlaylistSource() {
 
                                         </p>
                                     </div>
-
-                                    <div className="info-icons">
-                                        <i className="fa fa-ellipsis-v fa-2x"></i>
-                                    </div>
-
                                 </li>
                             ))}
                         </ul>
@@ -67,9 +65,6 @@ export default function PlaylistSource() {
             ) : (
                     <Loading></Loading>
                 )}
-
-
-
         </div>
     );
 
