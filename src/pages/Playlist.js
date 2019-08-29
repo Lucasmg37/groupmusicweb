@@ -122,39 +122,41 @@ export default function Playlist({ match, history }) {
             </div>
 
             {loadmusics ? (
-                <div className="list-playlist">
-                    {musicsPlaylist ? (
-                        <ul>
-                            {musicsPlaylist.map(music => (
-                                <li key={music.id_musicplaylist}
-                                    className={+music.bl_selected === 1 ? 'list-playlist-select' : ''}
-                                    onClick={() => selectMusic(music.id_musicplaylist)}
-                                >
-                                    <img src={music.st_urlimagem} />
-                                    <div className="info-music">
-                                        <strong>{music.st_nome}</strong>
-                                        <p>Artista: {music.st_artista}</p>
-                                        <p>Album: {music.st_album}</p>
-                                    </div>
-                                    <div className="actions-buttons">
+                <div className="container-area ">
+                    <div className="list-playlist">
+                        {musicsPlaylist ? (
+                            <ul>
+                                {musicsPlaylist.map(music => (
+                                    <li key={music.id_musicplaylist}
+                                        className={+music.bl_selected === 1 ? 'list-playlist-select' : ''}
+                                        onClick={() => selectMusic(music.id_musicplaylist)}
+                                    >
+                                        <img src={music.st_urlimagem} />
+                                        <div className="info-music">
+                                            <strong>{music.st_nome}</strong>
+                                            <p>Artista: {music.st_artista}</p>
+                                            <p>Album: {music.st_album}</p>
+                                        </div>
+                                        <div className="actions-buttons">
 
-                                        <button>Copiar para...</button>
+                                            <button>Copiar para...</button>
 
-                                        {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
-                                            <button onClick={() => removeMusicPlaylist(music.id_musicplaylist)}>Remover</button>
-                                        ) : <div></div>}
+                                            {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
+                                                <button onClick={() => removeMusicPlaylist(music.id_musicplaylist)}>Remover</button>
+                                            ) : <div></div>}
 
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (<div className="empty-response">Nenhuma música nesta playlist!</div>)}
-
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (<div className="empty-response">Nenhuma música nesta playlist!</div>)}
+                    </div>
                 </div>) : (
                     <Loading></Loading>
                 )}
 
         </div>
+
 
     );
 
