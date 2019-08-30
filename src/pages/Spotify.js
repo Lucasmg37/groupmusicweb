@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Loading from '../components/Loading';
+import PopUp from './PopUp';
 
 export default function Spotify() {
 
@@ -43,7 +44,6 @@ export default function Spotify() {
 
     return (
         <div className="container-area">
-
             <div className="area-busca">
                 <h1>Suas Playlist do Spotify</h1>
             </div>

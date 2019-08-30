@@ -5,8 +5,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import './Playlist.css';
 import Loading from '../components/Loading';
-
-
+import PopUp from './PopUp';
 
 
 export default function Playlist({ match, history }) {
@@ -79,7 +78,7 @@ export default function Playlist({ match, history }) {
 
     return (
         <div className="container-area-full">
-
+            <PopUp></PopUp>
             <div className='capa-playlist'>
                 <img src={playlist.st_capa} />
             </div>

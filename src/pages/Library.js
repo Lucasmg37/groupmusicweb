@@ -2,17 +2,50 @@ import React, { useState, useEffect } from "react";
 import Moment from "react-moment";
 import api from "../services/api";
 import Loading from "../components/Loading";
+import PopUp from "./PopUp";
 
 export default function Library({ history }) {
 
     const [playlists, setPlaylists] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [opened, setOpened] = useState(false);
+    const [playlistactiveid, setPlaylistactiveid] = useState("");
+    const [buttons, setButtons] = useState({});
 
-    const editPlaylist = function (id_playlist) {
-      //  history.push("/playlist/" + id_playlist);
+    
+
+    async function openPopUp(playlist_id) {
+        await setPlaylistactiveid(playlist_id);
+        setOpened(!opened);
     }
 
+    var actionButtonEdit;
+
     useEffect(() => {
+        
+        var id = playlistactiveid
+
+        actionButtonEdit = (id) => {
+            alert(id);
+            history.push("/edit/" + id);
+        }
+
+
+
+    }, [playlistactiveid])
+
+
+    useEffect(() => {
+
+        const dataButtons = 
+        [
+            {
+                name: "Teste",
+                action: actionButtonEdit
+            }
+        ]
+    
+    setButtons(dataButtons);
 
         async function loadPlaylist() {
             const response = await api.get("/Playlist/NULL/getPlaylistsUser");
@@ -28,6 +61,9 @@ export default function Library({ history }) {
 
     return (
         <div className="container-area">
+            <PopUp opened={opened}
+                closePopUp={() => setOpened(!opened)}
+                buttons={buttons}></PopUp>
 
             <div className="area-busca">
                 <h1>Suas Playlists</h1>
@@ -38,7 +74,7 @@ export default function Library({ history }) {
                     {playlists !== undefined && playlists.length > 0 ? (
                         <ul>
                             {playlists.map(playlist => (
-                                <li key={playlist.id_playlist} onClick={() => editPlaylist(playlist.id_playlist)}>
+                                <li key={playlist.id_playlist}>
                                     <img src={playlist.st_capa} />
                                     <div className="info-music">
                                         <strong>{playlist.st_nome}</strong>
@@ -51,7 +87,7 @@ export default function Library({ history }) {
                                     </div>
 
                                     <div className="info-icons">
-                                        <i className="fa fa-ellipsis-v fa-2x"></i>
+                                        <i onClick={() => openPopUp(playlist.id_playlist)} className="fa fa-ellipsis-v fa-2x"></i>
                                     </div>
 
                                 </li>
