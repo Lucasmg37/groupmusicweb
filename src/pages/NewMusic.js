@@ -6,8 +6,6 @@ export default function NewMusic({ match }) {
     const [st_music, setSt_music] = useState('');
     const [musics, setMusics] = useState([]);
 
-
-
     async function handleSource(e) {
         e.preventDefault();
 
@@ -36,7 +34,7 @@ export default function NewMusic({ match }) {
     return (
         <div className="container-area">
             <div className="area-busca">
-                <h1>Nova Música</h1>
+                <h1>Adicione músicas</h1>
                 <input
                     type="text"
                     onKeyUp={e => buscaMusica(e.target.value)} />

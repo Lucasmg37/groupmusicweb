@@ -21,6 +21,25 @@ export default function NewPlaylist({ history, match }) {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
+        const limpaCampos = () => {
+            setId_playlist("");
+            setSt_nome("");
+            setSt_descricao("");
+            setBl_privada("");
+            setBl_publicedit("");
+            setBl_sincronizar("");
+            setBl_sincronizado("");
+            setSt_capa("");
+
+            console.log(history.location.pathname);
+
+        }
+
+
+        limpaCampos();
+    }, [history.location.pathname])
+
+    useEffect(() => {
 
         const id_usuario = localStorage.getItem("id_usuario")
 
@@ -50,9 +69,6 @@ export default function NewPlaylist({ history, match }) {
 
         sourcePlaylist();
 
-
-
-
     }, [match.params.id_playlist])
 
 
@@ -78,7 +94,7 @@ export default function NewPlaylist({ history, match }) {
             {loaded && (
                 <div>
                     <div className="area-busca">
-                        <h1>Crie a sua.</h1>
+                        {match.params.id_playlist ? (<h1>Mude o que quiser.</h1>) : (<h1>Crie a sua.</h1>) }
                     </div>
 
                     <form>
@@ -101,7 +117,7 @@ export default function NewPlaylist({ history, match }) {
                                 checked={bl_privada}
                                 onChangeFunction={() => setBl_privada(!bl_privada)}
                             ></Toggle>
-                            <label for="bl_privada">Playlist privada. (Outros usuários não terão acesso a sua playlist.)</label>
+                            <label for="bl_privada">Playlist privada. (Outros usuários não têm acesso a sua playlist.)</label>
                         </div>
 
                         <div className="input-toggle">
@@ -110,7 +126,7 @@ export default function NewPlaylist({ history, match }) {
                                 checked={bl_publicedit}
                                 onChangeFunction={() => setBl_publicedit(!bl_publicedit)}
                             ></Toggle>
-                            <label for="bl_publicedit">Playlist editável. (Outros usuários poderão adicionar e remover músicas desta playlist.)</label>
+                            <label for="bl_publicedit">Playlist editável. (Outros usuários podem adicionar e remover músicas desta playlist.)</label>
                         </div>
 
                         <div className="input-toggle">
@@ -119,7 +135,7 @@ export default function NewPlaylist({ history, match }) {
                                 checked={bl_sincronizar}
                                 onChangeFunction={() => setBl_sincronizar(!bl_sincronizar)}
                             ></Toggle>
-                            <label for="bl_sincronizar">Sincronizar com o Spotify <i className="fab fa-spotify"></i>. (Playlist será criada no spotify. Saiba mais em seu perfil.)</label>
+                            <label for="bl_sincronizar">Sincronizar com o Spotify <i className="fab fa-spotify"></i>.</label>
 
                         </div>
 

@@ -45,7 +45,7 @@ export default function Spotify() {
     return (
         <div className="container-area">
             <div className="area-busca">
-                <h1>Suas Playlist do Spotify</h1>
+                <h1>Suas Playlists do Spotify</h1>
             </div>
 
             {loaded ? (

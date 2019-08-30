@@ -9,43 +9,86 @@ export default function Library({ history }) {
     const [playlists, setPlaylists] = useState([]);
     const [loaded, setLoaded] = useState(false);
     const [opened, setOpened] = useState(false);
-    const [playlistactiveid, setPlaylistactiveid] = useState("");
-    const [buttons, setButtons] = useState({});
+    const [playlistactiveid, setPlaylistactiveid] = useState(0);
+    const [buttons, setButtons] = useState([]);
 
-    
-
-    async function openPopUp(playlist_id) {
-        await setPlaylistactiveid(playlist_id);
-        setOpened(!opened);
+    const desativaPlaylist = async (id_playlist) => {
+        await api.delete("/Playlist/" + id_playlist).then(response => {
+            setPlaylists(playlists.filter(playlist => playlist.id_playlist !== id_playlist));
+        })
     }
 
-    var actionButtonEdit;
+    const actionButtonEdit = (id) => {
+        history.push("/edit/" + id);
+    }
+
+    const actionButtonList = (id) => {
+        history.push("/playlist/" + id);
+    }
+
+    const actionButtonNewMusic = (id) => {
+        history.push("/playlist/" + id + "/new");
+    }
 
     useEffect(() => {
-        
-        var id = playlistactiveid
+        function updateAction() {
+            buttons.forEach(button => {
 
-        actionButtonEdit = (id) => {
-            alert(id);
-            history.push("/edit/" + id);
+                switch (button.id) {
+                    case 1: button.action = () => actionButtonEdit(playlistactiveid); break;
+                    case 2: button.action = () => actionButtonEdit(playlistactiveid); break;
+                    case 3: button.action = () => desativaPlaylist(playlistactiveid); break;
+                    case 4: button.action = () => actionButtonList(playlistactiveid); break;
+                    case 5: button.action = () => actionButtonNewMusic(playlistactiveid); break;
+                }
+            });
         }
 
-
+        updateAction();
 
     }, [playlistactiveid])
 
+    async function openPopUp(id) {
+        await setPlaylistactiveid(id);
+        setOpened(!opened);
+    }
 
     useEffect(() => {
 
-        const dataButtons = 
-        [
-            {
-                name: "Teste",
-                action: actionButtonEdit
-            }
-        ]
-    
-    setButtons(dataButtons);
+        const dataButtons =
+            [
+                {
+                    name: "Editar",
+                    action: ""
+                },
+                {
+                    name: "Compartilhar",
+                    action: ""
+                },
+                {
+                    name: "Excluir",
+                    action: ""
+                },
+                {
+                    name: "Listar Músicas",
+                    action: ""
+                },
+                {
+                    name: "Nova música",
+                    action: ""
+                }
+            ]
+
+        function criaIdButtons() {
+            var indice = 1;
+            dataButtons.forEach(data => {
+                data.id = indice;
+                indice++;
+            });
+        }
+
+        criaIdButtons();
+        setButtons(dataButtons);
 
         async function loadPlaylist() {
             const response = await api.get("/Playlist/NULL/getPlaylistsUser");
