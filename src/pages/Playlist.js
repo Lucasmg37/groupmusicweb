@@ -76,15 +76,15 @@ export default function Playlist({ match, history }) {
             const response = await api.get('/Music/' + match.params.id_playlist + '/byPlaylist');
 
             //Tratar tamanho de string
-            var valorestratados = [];
-            response.data.data.forEach(music => {
+            // var valorestratados = [];
+            // response.data.data.forEach(music => {
                 // let isMore = music.st_nome.length !== undefined && music.st_nome.length >= 30 ? true : false;
                 // music.st_nome = music.st_nome.substr(0, 30);
                 // music.st_nome = isMore ? music.st_nome + '...' : music.st_nome;
-                valorestratados.push(music);
-            });
+                // valorestratados.push(music);
+            // });
 
-            setMusicsPlaylist(valorestratados);
+            setMusicsPlaylist(response.data.data);
             setLoadmusics(true);
             
         }
@@ -140,7 +140,7 @@ export default function Playlist({ match, history }) {
                     </div>
                 </div>
             </div>
-            {loadmusics ? (
+            {loadmusics && loadplaylist ? (
                 <div className="container-area">
                     <div>
                         {musicsPlaylist ? (

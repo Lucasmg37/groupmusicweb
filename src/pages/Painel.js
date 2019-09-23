@@ -17,11 +17,21 @@ import Library from "./Library";
 export default function Painel({history}) {
 
     const [integracao, setIntegracao] = useState({});
+    const [currentPlayerName, setCurrentPlayerName] = useState('');
+    const [currentPlayerArtists, setCurrentPlayerArtists] = useState('');
 
     function logout(){
         localStorage.removeItem("st_token");
         localStorage.removeItem("id_usuario");
         history.push("/login")
+    }
+
+    async function getCurrentPlayer(){
+        const response = await api.get('/Spotify/null/getCurrentPlayer').then(response => {
+            setCurrentPlayerArtists(response.data.data.resumo.artists);
+            setCurrentPlayerName(response.data.data.resumo.name);
+
+        });
     }
 
     useEffect(() => {
@@ -41,8 +51,16 @@ export default function Painel({history}) {
         }
         verificaUsuario(); 
         verificaIntegracao();
+        getCurrentPlayer();
+        getInterval();
 
     }, []);
+
+    function getInterval(){
+        setInterval(() => {
+            getCurrentPlayer();
+        }, 5000);
+    }
 
     return (
         <div className="painel">
@@ -73,6 +91,13 @@ export default function Painel({history}) {
 
                         <li onClick={logout}><i className="fa fa-door-open"></i> <span>Sair</span></li>
                 </ul>
+
+                <div className="playing">
+                    <div>Em seu <i className="fab fa-spotify"></i></div>
+                    <div className="music">{currentPlayerName}</div>
+                    <div>{currentPlayerArtists}</div>
+                </div>
+
             </div>
 
             <div className="area-page">

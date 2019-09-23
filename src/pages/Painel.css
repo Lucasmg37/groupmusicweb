@@ -9,7 +9,8 @@
   .menu {
     display: flex;
     height: 100%;
-    background: #333
+    background: #333;
+    flex-direction: column;
   }
   
   .menu ul{
@@ -42,6 +43,16 @@
    margin-left: 10px;
   }
 
+.playing {
+  background: #1ED760;
+  padding: 20px;
+  color: #fff;
+}
+
+.playing .music {
+  font-size: 1.5em;
+  font-weight: 600;
+}
   .area-page {
       display: block;
       width: 100%;
