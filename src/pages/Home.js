@@ -43,36 +43,39 @@ export default function Home({ history }) {
                     <h1>Para você, {usuario.st_nome}!</h1>
                 </div>
             )}
-           
+
             <div className='listagem'>
                 {loaded ? (
 
-<div>
-{playlists !== undefined  && playlists.length > 0 && (
+                    <div>
+                        {playlists !== undefined && playlists.length > 0 && (
 
-    <ul>
+                            <ul>
 
-        {playlists.map(playlist => (
+                                {playlists.map(playlist => (
 
-            <li className="animate-up-opacity" key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
-                <img src={playlist.st_capa} />
-                <div className='footer'>
-                    <strong>{playlist.st_nome}</strong>
-                    <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment>
-                    </p>
+                                    <li className="animate-up-opacity" key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
+                                        <div className="capa">
+                                            <img src={playlist.st_capa} />
+                                        </div>
 
-                </div>
-            </li>
+                                        <div className='footer'>
+                                            <strong>{playlist.st_nome}</strong>
+                                            <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment>
+                                            </p>
 
-        ))}
+                                        </div>
+                                    </li>
 
-    </ul>
-)}
-</div>
+                                ))}
 
-                ) : (<Loading></Loading> )}
-               
-</div>
+                            </ul>
+                        )}
+                    </div>
+
+                ) : (<Loading></Loading>)}
+
+            </div>
         </div>
     );
 

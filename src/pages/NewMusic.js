@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './NewMusic.css';
 import api from '../services/api';
+import Loading from '../components/Loading';
 export default function NewMusic({ match }) {
 
-    const [st_music, setSt_music] = useState('');
     const [musics, setMusics] = useState([]);
+    const [loaded, setloaded] = useState(false);
 
-    async function handleSource(e) {
-        e.preventDefault();
+    useEffect(() => {
+        async function getTopMusics() {
+            const response = await api.get("/Usuario/null/getTopTracks");
+            setMusics(response.data.data);
+            setloaded(true);
+        }
 
-        const response = await api.get('/Musics/' + st_music);
+        getTopMusics();
 
-        setMusics(response.data.data);
-    }
+    }, [])
 
     async function addMusic(id_music) {
         const response = await api.post('/Music/', {
@@ -25,10 +29,10 @@ export default function NewMusic({ match }) {
     }
 
     async function buscaMusica(source) {
-
+        setloaded(false);
         const response = await api.get('/Musics/' + source);
         setMusics(response.data.data);
-
+        setloaded(true);
     }
 
     return (
@@ -37,35 +41,40 @@ export default function NewMusic({ match }) {
                 <h1>Adicione músicas</h1>
                 <input
                     type="text"
+                    placeholder="Escreva o nome de sua música"
                     onKeyUp={e => buscaMusica(e.target.value)} />
             </div>
             <div>
-                {musics ? (
+                {loaded ? (
+                    <div>
+                        {musics ? (
+                            <div className="list-playlist">
 
-                    <div className="list-playlist">
+                                <ul>
+                                    {musics.map(music => (
+                                        <li>
+                                            <img src={music.st_urlimagem} />
+                                            <div className="info-music">
+                                                <strong>{music.st_nome}</strong>
+                                                <p>Artista: {music.st_artista}</p>
+                                                <p>Album: {music.st_album}</p>
+                                            </div>
+                                            <div className="actions-buttons">
+                                                <button onClick={() => addMusic(music.id_spotify)}>Adiconar</button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
 
-                        <ul>
-                            {musics.map(music => (
-                                <li>
-                                    <img src={music.st_urlimagem} />
-                                    <div className="info-music">
-                                        <strong>{music.st_nome}</strong>
-                                        <p>Artista: {music.st_artista}</p>
-                                        <p>Album: {music.st_album}</p>
-                                    </div>
-                                    <div className="actions-buttons">
-                                        <button onClick={() => addMusic(music.id_spotify)}>Adiconar</button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                            </div>
 
+                        ) : (
+                                <div className="empty-response">Sem resultados!</div>
+                            )}
                     </div>
-
                 ) : (
-                        <div className="empty-response">Sem resultados!</div>
+                        <Loading></Loading>
                     )}
-
             </div>
         </div>
     );

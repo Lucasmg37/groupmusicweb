@@ -6,10 +6,6 @@ import api from "../services/api";
 
 export default function NewPlaylist({ history, match }) {
 
-    const teste = function () {
-        console.log("dvsiohja");
-    }
-
     const [id_playlist, setId_playlist] = useState('');
     const [st_nome, setSt_nome] = useState('');
     const [st_descricao, setSt_descricao] = useState('');
@@ -30,9 +26,6 @@ export default function NewPlaylist({ history, match }) {
             setBl_sincronizar("");
             setBl_sincronizado("");
             setSt_capa("");
-
-            console.log(history.location.pathname);
-
         }
 
 
