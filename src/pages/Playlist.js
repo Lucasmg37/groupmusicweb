@@ -6,6 +6,7 @@ import api from '../services/api';
 import './Playlist.css';
 import Loading from '../components/Loading';
 import PopUp from './PopUp';
+import ListMedia from '../components/ListMedia';
 
 
 export default function Playlist({ match, history }) {
@@ -13,6 +14,7 @@ export default function Playlist({ match, history }) {
     const [playlist, setPlaylist] = useState({});
     const [musicsPlaylist, setMusicsPlaylist] = useState([]);
     const [loadmusics, setLoadmusics] = useState(false);
+    const [loadplaylist, setLoadPlaylist] = useState(false);
 
     const id_usuario = localStorage.getItem("id_usuario");
 
@@ -20,12 +22,6 @@ export default function Playlist({ match, history }) {
         await api.delete("/Playlist/" + id_playlist).then(response => {
             history.push("/");
         })
-    }
-
-    async function removeMusicPlaylist(id_musicplaylist) {
-        await api.delete("/Music/" + id_musicplaylist);
-        setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
-
     }
 
     async function clonarPlaylist(id_musicplaylist) {
@@ -37,6 +33,13 @@ export default function Playlist({ match, history }) {
 
     }
 
+    async function playPlaylist(id_playlis) {
+        await api.post("/Playlist/" + id_playlis + "/play").then(
+            // response => {
+            //     history.push("/playlist/" + response.data.data.id_playlist);
+            // }
+        );
+    }
 
     function selectMusic(id_musicplaylist) {
 
@@ -55,6 +58,8 @@ export default function Playlist({ match, history }) {
     useEffect(() => {
 
         async function loadPlaylist() {
+            loadPlaylistMusics();
+
             const response = await api.get('/Playlist/' + match.params.id_playlist);
             setPlaylist(response.data.data);
 
@@ -63,13 +68,25 @@ export default function Playlist({ match, history }) {
                 return;
             }
 
-            loadPlaylistMusics();
+            setLoadPlaylist(true);
+            // loadPlaylistMusics();
         }
 
         async function loadPlaylistMusics() {
             const response = await api.get('/Music/' + match.params.id_playlist + '/byPlaylist');
-            setMusicsPlaylist(response.data.data);
+
+            //Tratar tamanho de string
+            var valorestratados = [];
+            response.data.data.forEach(music => {
+                // let isMore = music.st_nome.length !== undefined && music.st_nome.length >= 30 ? true : false;
+                // music.st_nome = music.st_nome.substr(0, 30);
+                // music.st_nome = isMore ? music.st_nome + '...' : music.st_nome;
+                valorestratados.push(music);
+            });
+
+            setMusicsPlaylist(valorestratados);
             setLoadmusics(true);
+            
         }
 
         loadPlaylist();
@@ -79,72 +96,65 @@ export default function Playlist({ match, history }) {
     return (
         <div className="container-area-full">
             <PopUp></PopUp>
-            <div className='capa-playlist'>
-                <img src={playlist.st_capa} />
-            </div>
 
-            <div className='capa-playlist-sobre'></div>
+            <div className={loadplaylist ? 'header-playlist header-playlist-show' : 'header-playlist'}>
 
-            <div className='playlist-info'>
-                <h1>{playlist.st_nome}</h1>
-                <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment></p>
-                <p className='info-by'>By {playlist.st_nomeusuario}</p>
+                <div className='capa-playlist'>
+                    <img src={playlist.st_capa} />
+                </div>
 
-                <div className='button-actions'>
-                    {+id_usuario !== +playlist.id_usuario && (
-                        <button> <i className="fa fa-heart"></i> Curtir</button>
-                    )}
+                <div className='capa-playlist-sobre'></div>
 
+                <div className='playlist-info'>
+                    <h1>{playlist.st_nome}</h1>
+                    <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment></p>
+                    <p className='info-by'>By {playlist.st_nomeusuario}</p>
 
-                    <button onClick={() => clonarPlaylist(playlist.id_playlist)}> <i className="fa fa-copy"></i> Clonar</button>
+                    <div className='button-actions'>
+                        {+id_usuario !== +playlist.id_usuario && (
+                            <button> <i className="fa fa-heart"></i> Curtir</button>
+                        )}
 
-                    {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
-                        <Link to={'/playlist/' + playlist.id_playlist + '/new'}>
-                            <button> <i className="fa fa-plus"></i> Nova Música</button>
-                        </Link>
-                    ) : <div></div>}
+                        <button onClick={() => clonarPlaylist(playlist.id_playlist)}> <i className="fa fa-copy"></i> Clonar</button>
 
-                    <button> <i className="fa fa-link"></i> Compartilhar</button>
+                        {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
+                            <Link to={'/playlist/' + playlist.id_playlist + '/new'}>
+                                <button> <i className="fa fa-plus"></i> Nova Música</button>
+                            </Link>
+                        ) : <div></div>}
 
-                    {+id_usuario === +playlist.id_usuario && (
-                        <Link to={'/edit/' + playlist.id_playlist}>
-                            <button> <i className="fa fa-edit"></i> Editar</button>
-                        </Link>
-                    )}
+                        <button> <i className="fa fa-link"></i> Compartilhar</button>
 
-                    {+id_usuario === +playlist.id_usuario && (
-                        <button onClick={() => desativaPlaylist(playlist.id_playlist)}> <i className="fa fa-trash"></i> Excluir</button>
-                    )}
+                        {+id_usuario === +playlist.id_usuario && (
+                            <Link to={'/edit/' + playlist.id_playlist}>
+                                <button> <i className="fa fa-edit"></i> Editar</button>
+                            </Link>
+                        )}
 
+                        {+id_usuario === +playlist.id_usuario && (
+                            <button onClick={() => desativaPlaylist(playlist.id_playlist)}> <i className="fa fa-trash"></i> Excluir</button>
+                        )}
 
+                        <button onClick={() => playPlaylist(playlist.id_playlist)} > <i className="fa fa-play"></i> Reproduzir</button>
+
+                    </div>
                 </div>
             </div>
-
             {loadmusics ? (
-                <div className="container-area ">
-                    <div className="list-playlist">
+                <div className="container-area">
+                    <div>
                         {musicsPlaylist ? (
                             <ul>
                                 {musicsPlaylist.map(music => (
                                     <li key={music.id_musicplaylist}
                                         className={+music.bl_selected === 1 ? 'list-playlist-select' : ''}
-                                        onClick={() => selectMusic(music.id_musicplaylist)}
+                                    // onClick={() => selectMusic(music.id_musicplaylist)}
                                     >
-                                        <img src={music.st_urlimagem} />
-                                        <div className="info-music">
-                                            <strong>{music.st_nome}</strong>
-                                            <p>Artista: {music.st_artista}</p>
-                                            <p>Album: {music.st_album}</p>
-                                        </div>
-                                        <div className="actions-buttons">
-
-                                            <button>Copiar para...</button>
-
-                                            {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
-                                                <button onClick={() => removeMusicPlaylist(music.id_musicplaylist)}>Remover</button>
-                                            ) : <div></div>}
-
-                                        </div>
+                                        <ListMedia
+                                            playlist={playlist}
+                                            id_usuario={id_usuario}
+                                            music={music}
+                                        ></ListMedia>
                                     </li>
                                 ))}
                             </ul>
