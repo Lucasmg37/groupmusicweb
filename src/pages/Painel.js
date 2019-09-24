@@ -13,30 +13,39 @@ import Perfil from "./Perfil";
 import Spotify from "./Spotify";
 import Library from "./Library";
 
-
-export default function Painel({history}) {
+export default function Painel({ history }) {
 
     const [integracao, setIntegracao] = useState({});
     const [currentPlayerName, setCurrentPlayerName] = useState('');
     const [currentPlayerArtists, setCurrentPlayerArtists] = useState('');
+    const [isCurrentPlayer, setIsCurrentPlayer] = useState(false);
+    const [progress_ms, setProgress_ms] = useState(0);
+    const [duration_ms, setDuration_ms] = useState(0);
+    const [progressForCent, setProgressForCent] = useState(0);
 
-    function logout(){
+
+
+    function logout() {
         localStorage.removeItem("st_token");
         localStorage.removeItem("id_usuario");
         history.push("/login")
     }
 
-    async function getCurrentPlayer(){
+    async function getCurrentPlayer() {
         const response = await api.get('/Spotify/null/getCurrentPlayer').then(response => {
             setCurrentPlayerArtists(response.data.data.resumo.artists);
             setCurrentPlayerName(response.data.data.resumo.name);
+            setDuration_ms(response.data.data.resumo.progress_ms);
+            setProgress_ms(response.data.data.resumo.duration_ms);
+            setIsCurrentPlayer(response.data.data.isPlayling);
+            setProgressForCent((+response.data.data.resumo.progress_ms * 100) / response.data.data.resumo.duration_ms);
 
         });
     }
 
     useEffect(() => {
 
-        async function verificaUsuario(){
+        async function verificaUsuario() {
             const response = await api.get('/Usuario/null/verificaautenticacao').then(response => {
 
             }).catch(response => {
@@ -49,17 +58,34 @@ export default function Painel({history}) {
             setIntegracao(response.data.data);
 
         }
-        verificaUsuario(); 
+        verificaUsuario();
         verificaIntegracao();
         getCurrentPlayer();
         getInterval();
+        atualizaListaDeReproducao();
 
     }, []);
 
-    function getInterval(){
-        setInterval(() => {
+async function atualizaListaDeReproducao(){
+    // await setInterval(() => {
+    //     atualzar();
+    // }, 1000);
+
+    // function atualzar(){
+    //     console.log(progress_ms + 1000);
+    //     setProgress_ms(progress_ms + 1000);
+    //     // setProgressForCent(((+progress_ms + 100000) * 100) / duration_ms);
+    // }
+}
+
+    async function getInterval() {
+
+        // if (isCurrentPlayer) {
+        await setInterval(() => {
             getCurrentPlayer();
         }, 5000);
+        // }
+
     }
 
     return (
@@ -77,7 +103,7 @@ export default function Painel({history}) {
                     </Link>
 
                     <Link to="/library/">
-                    <li><i className="fa fa-list"></i> <span>Biblioteca</span></li>
+                        <li><i className="fa fa-list"></i> <span>Biblioteca</span></li>
                     </Link>
 
                     {+integracao.bl_integracao === 1 && (
@@ -89,13 +115,18 @@ export default function Painel({history}) {
                         <li><i className="fa fa-user"></i> <span>Perfil</span></li>
                     </Link>
 
-                        <li onClick={logout}><i className="fa fa-door-open"></i> <span>Sair</span></li>
+                    <li onClick={logout}><i className="fa fa-door-open"></i> <span>Sair</span></li>
                 </ul>
 
-                <div className="playing">
-                    <div>Em seu <i className="fab fa-spotify"></i></div>
-                    <div className="music">{currentPlayerName}</div>
-                    <div>{currentPlayerArtists}</div>
+                <div className={isCurrentPlayer ? 'playing opacity' : 'playing'}>
+                    <div className="linha-de-reproducao">
+                        <div className="reproduzido" style={{ width: progressForCent + '%' }} ></div>
+                    </div>
+                    <div className="info">
+                        <div>Em seu <i className="fab fa-spotify"></i></div>
+                        <div className="music">{currentPlayerName}</div>
+                        <div>{currentPlayerArtists}</div>
+                    </div>
                 </div>
 
             </div>
@@ -109,7 +140,7 @@ export default function Painel({history}) {
                     <Route path="/playlist/" exact component={PlaylistSource}></Route>
                     <Route path="/playlist/:id_playlist" exact component={Playlist}></Route>
                     <Route path="/playlist/:id_playlist/new" exact component={NewMusic}></Route>
-                        <Route path="/perfil/" exact  render={ () => (<Perfil integracao={integracao}/>)}></Route>
+                    <Route path="/perfil/" exact render={() => (<Perfil integracao={integracao} />)}></Route>
                     <Route path="/spotify" exact component={Spotify}></Route>
                     <Route path="/library/" exact component={Library}></Route>
                 </Switch>
