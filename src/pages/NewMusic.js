@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './NewMusic.css';
 import api from '../services/api';
 import Loading from '../components/Loading';
+import ListMedia from '../components/ListMedia';
 export default function NewMusic({ match }) {
 
     const [musics, setMusics] = useState([]);
@@ -48,20 +49,31 @@ export default function NewMusic({ match }) {
                 {loaded ? (
                     <div>
                         {musics ? (
-                            <div className="list-playlist">
+                            <div className="">
 
                                 <ul>
                                     {musics.map(music => (
                                         <li>
-                                            <img src={music.st_urlimagem} />
+
+                                            <ListMedia music={music}
+                                                        buttons = {[
+                                                            {
+                                                                text: 'Adiconar',
+                                                                show: true,
+                                                                action: addMusic(music.id_spotify)
+
+                                                            }
+                                                        ]}></ListMedia>
+
+                                            {/* <img src={music.st_urlimagem} />
                                             <div className="info-music">
                                                 <strong>{music.st_nome}</strong>
                                                 <p>Artista: {music.st_artista}</p>
                                                 <p>Album: {music.st_album}</p>
                                             </div>
                                             <div className="actions-buttons">
-                                                <button onClick={() => addMusic(music.id_spotify)}>Adiconar</button>
-                                            </div>
+                                                <button onClick={() => }>Adiconar</button>
+                                            </div> */}
                                         </li>
                                     ))}
                                 </ul>

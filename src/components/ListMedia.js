@@ -1,6 +1,7 @@
 import React from 'react';
 import api from '../services/api'
 import './ListMedia.scss'
+import ButtonAction from './ButtonAction';
 
 export default function ListMedia(props) {
 
@@ -36,12 +37,18 @@ export default function ListMedia(props) {
 
             <div className="actions-buttons">
 
-                <button>Copiar para...</button>
+                {
+                    props.buttons.map(button => (
+                    <ButtonAction text={button.text} ></ButtonAction>
+                ))
+                }
+
+                {/* <button>Copiar para...</button>
 
                 {(+props.id_usuario === +props.playlist.id_usuario &&
                     +props.playlist.bl_publicedit === 0) || +props.playlist.bl_publicedit === 1 ? (
                         <button onClick={() => removeMusicPlaylist(props.music.id_musicplaylist)}>Remover</button>
-                    ) : <div></div>}
+                    ) : <div></div>} */}
 
             </div>
         </div>
