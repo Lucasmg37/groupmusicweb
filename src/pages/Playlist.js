@@ -54,6 +54,20 @@ export default function Playlist({ match, history }) {
 
     }
 
+    async function removeMusicPlaylist(id_musicplaylist) {
+        await api.delete("/Music/" + id_musicplaylist);
+        setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
+
+    }
+
+    async function playPlaylistMusic(id_musicplaylist) {
+        await api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist").then(
+            // response => {
+            //     history.push("/playlist/" + response.data.data.id_playlist);
+            // }
+        );
+    }
+
 
     useEffect(() => {
 
@@ -74,19 +88,9 @@ export default function Playlist({ match, history }) {
 
         async function loadPlaylistMusics() {
             const response = await api.get('/Music/' + match.params.id_playlist + '/byPlaylist');
-
-            //Tratar tamanho de string
-            // var valorestratados = [];
-            // response.data.data.forEach(music => {
-                // let isMore = music.st_nome.length !== undefined && music.st_nome.length >= 30 ? true : false;
-                // music.st_nome = music.st_nome.substr(0, 30);
-                // music.st_nome = isMore ? music.st_nome + '...' : music.st_nome;
-                // valorestratados.push(music);
-            // });
-
             setMusicsPlaylist(response.data.data);
             setLoadmusics(true);
-            
+
         }
 
         loadPlaylist();
@@ -151,9 +155,24 @@ export default function Playlist({ match, history }) {
                                     // onClick={() => selectMusic(music.id_musicplaylist)}
                                     >
                                         <ListMedia
+                                            hoverCapa={true}
+                                            clickCapa={() => playPlaylistMusic(music.id_musicplaylist)}
                                             playlist={playlist}
                                             id_usuario={id_usuario}
                                             music={music}
+                                            buttons={[
+                                                {
+                                                    text: 'Copiar para...',
+                                                    show: true,
+
+                                                },
+                                                {
+                                                    text: 'Remover',
+                                                    show: +id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0 || +playlist.bl_publicedit === 1,
+                                                    action: () => removeMusicPlaylist(music.id_musicplaylist)
+
+                                                }
+                                            ]}
                                         ></ListMedia>
                                     </li>
                                 ))}

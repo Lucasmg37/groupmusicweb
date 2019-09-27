@@ -60,7 +60,7 @@ export default function NewMusic({ match }) {
                                                             {
                                                                 text: 'Adiconar',
                                                                 show: true,
-                                                                action: addMusic(music.id_spotify)
+                                                                action: () => addMusic(music.id_spotify)
 
                                                             }
                                                         ]}></ListMedia>

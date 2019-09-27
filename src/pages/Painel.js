@@ -66,23 +66,25 @@ export default function Painel({ history }) {
 
     }, []);
 
-async function atualizaListaDeReproducao(){
-    // await setInterval(() => {
-    //     atualzar();
-    // }, 1000);
+    async function atualizaListaDeReproducao() {
+        // await setInterval(() => {
+        //     atualzar();
+        // }, 1000);
 
-    // function atualzar(){
-    //     console.log(progress_ms + 1000);
-    //     setProgress_ms(progress_ms + 1000);
-    //     // setProgressForCent(((+progress_ms + 100000) * 100) / duration_ms);
-    // }
-}
+        // function atualzar(){
+        //     console.log(progress_ms + 1000);
+        //     setProgress_ms(progress_ms + 1000);
+        //     // setProgressForCent(((+progress_ms + 100000) * 100) / duration_ms);
+        // }
+    }
 
     async function getInterval() {
 
         // if (isCurrentPlayer) {
         await setInterval(() => {
-            getCurrentPlayer();
+            if (localStorage.getItem('st_token')) {
+                getCurrentPlayer();
+            }
         }, 5000);
         // }
 

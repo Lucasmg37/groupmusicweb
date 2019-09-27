@@ -5,27 +5,17 @@ import ButtonAction from './ButtonAction';
 
 export default function ListMedia(props) {
 
-    async function playPlaylistMusic(id_musicplaylist) {
-        await api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist").then(
-            // response => {
-            //     history.push("/playlist/" + response.data.data.id_playlist);
-            // }
-        );
-    }
-
-    async function removeMusicPlaylist(id_musicplaylist) {
-        await api.delete("/Music/" + id_musicplaylist);
-        // setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
-
-    }
-
     return (
 
         <div className="list-media">
-            <div onClick={() => playPlaylistMusic(props.music.id_musicplaylist)} className="img-playlist">
-                <div className="hover-img">
-                    <i className="fa fa-play"></i>
-                </div>
+            <div onClick={props.hoverCapa && props.clickCapa} className="img-playlist">
+
+                {props.hoverCapa && (
+                    <div className="hover-img">
+                        <i className="fa fa-play"></i>
+                    </div>
+                )}
+
                 <img src={props.music.st_urlimagem} />
             </div>
 
@@ -39,8 +29,8 @@ export default function ListMedia(props) {
 
                 {
                     props.buttons.map(button => (
-                    <ButtonAction text={button.text} ></ButtonAction>
-                ))
+                        <ButtonAction text={button.text} show={button.show} action={button.action} ></ButtonAction>
+                    ))
                 }
 
                 {/* <button>Copiar para...</button>
