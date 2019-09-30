@@ -10,6 +10,17 @@ export default function Login({ history }) {
     const [password, setPassword] = useState('');
     const [logging, setLogging] = useState(false);
     const [erroLogin, setErroLogin] = useState('');
+    const [emailresend, setEmailresend] = useState('');
+    const [countNotActivate, setCountNotActivate] = useState(false);
+
+    function sendActivateEmail(){
+        if (emailresend) {
+            api.post('Usuario/' + emailresend + '/resendEmail');
+        } else {
+            setCountNotActivate(false);
+        }
+    }
+
 
     useEffect(() => {
         localStorage.removeItem("st_token");
@@ -21,6 +32,8 @@ export default function Login({ history }) {
 
         setLogging(true);
         setErroLogin('');
+        setCountNotActivate(false);
+        setEmailresend('');
 
         await api.post('/Login', {
             'st_login': username,
@@ -28,6 +41,10 @@ export default function Login({ history }) {
         }).then(response => {
 
             async function setLocalStorage() {
+
+                //Buscar configurações do usuário
+                await localStorage.setItem('bl_integracao', response.data.data.bl_integracao);
+                await localStorage.setItem('bl_premium', response.data.data.bl_premium);
                 await localStorage.setItem('st_token', response.data.data.st_token);
                 await localStorage.setItem('id_usuario', response.data.data.id_usuario);
             }
@@ -36,8 +53,16 @@ export default function Login({ history }) {
             window.location.href = "http://localhost:3000";
 
         }).catch(response => {
+
             setLogging(false);
-            setErroLogin(response.response.data.message);
+
+            if (+response.response.data.code === 1 ) {
+                setCountNotActivate(true);
+                setEmailresend(username);
+            } else {
+                setErroLogin(response.response.data.message);
+            }
+
         });
 
 
@@ -63,6 +88,10 @@ export default function Login({ history }) {
             </form>
 
             <div className={ erroLogin !== '' ? 'erro-box erro-box-show' : 'erro-box' }>{erroLogin}</div>
+            
+            <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Enviamos um email de ativação para o seu email.<br/>
+            <button onClick={() => sendActivateEmail() } >Clique aqui para receber um novo link de ativação</button>
+            </div>
             <div><button onClick={() => history.push("/signup")} className="link-button">Não tenho uma conta.</button></div>
 
 

@@ -10,8 +10,8 @@ export default function NewMusic({ match }) {
 
     useEffect(() => {
         async function getTopMusics() {
-            const response = await api.get("/Usuario/null/getTopTracks");
-            setMusics(response.data.data);
+            // const response = await api.get("/Usuario/null/getTopTracks");
+            // setMusics(response.data.data);
             setloaded(true);
         }
 

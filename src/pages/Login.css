@@ -6,10 +6,10 @@
     flex-direction: column;
 }
 
-.container-login h1 {
+.container-login h1, .container-center h1 {
     color: #aaa;
     font-size: 4em;
-    margin: 40px auto;
+    margin: 20px auto;
     text-align: left;
 }
 
@@ -31,7 +31,7 @@
     width: 100%;
 }
 
-.form-login {
+.container-login form {
     width: 100%;
     max-width: 400px;
     display: flex;
@@ -39,7 +39,17 @@
     text-align: center;
 }
 
-.form-login input, .form-login button {
+.container-center {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 400px;
+    margin: auto;
+}
+
+.container-login form input, .container-login form button {
     padding: 15px 5px;
     margin-top: 10px;
     border: 0;
@@ -49,14 +59,32 @@
     color: #ddd;
 }
 
-.form-login button {
+.container-login form button {
     background: #54B25D;
     color: #fff;
     cursor: pointer;
     transition: all .2s linear;
 }
 
-.form-login button:hover {
+.button-green {
+    background: #54B25D;
+    color: #fff;
+    cursor: pointer;
+    transition: all .2s linear;
+    padding: 15px 5px;
+    margin-top: 10px;
+    border: 0;
+    font-size: 1.1em;
+    border-radius: 5px;
+    width: 100%;
+    
+}
+
+.button-green:hover {
+    background: #4A934F;
+}
+
+.container-login form button:hover {
     background: #4A934F;
 }
 
@@ -73,6 +101,21 @@
     overflow: hidden;
     opacity: 0;
     transition: all .2s ease-in-out;
+}
+
+.erro-box-show button {
+    margin-top: 5px;
+    background: none;
+    color: #333;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all .2s ease-out;
+}
+
+.erro-box-show button:hover {
+    color: #555;
+    transform: translateY(-2px);
 }
 
 .erro-box-show {

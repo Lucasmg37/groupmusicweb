@@ -80,13 +80,16 @@ export default function Painel({ history }) {
 
     async function getInterval() {
 
-        // if (isCurrentPlayer) {
+        let bl_integracao = await localStorage.getItem('bl_integracao')
+
+        console.log(bl_integracao);
+
         await setInterval(() => {
-            if (localStorage.getItem('st_token')) {
+            if (bl_integracao) {
                 getCurrentPlayer();
+               
             }
         }, 5000);
-        // }
 
     }
 
