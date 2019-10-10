@@ -7,9 +7,10 @@ import './Playlist.css';
 import Loading from '../components/Loading';
 import PopUp from './PopUp';
 import ListMedia from '../components/ListMedia';
+import HeaderPlaylist from '../components/HeaderPlaylist';
 
 
-export default function Playlist({ match, history }) {
+export default function Playlist(props) {
 
     const [playlist, setPlaylist] = useState({});
     const [musicsPlaylist, setMusicsPlaylist] = useState([]);
@@ -20,25 +21,21 @@ export default function Playlist({ match, history }) {
 
     async function desativaPlaylist(id_playlist) {
         await api.delete("/Playlist/" + id_playlist).then(response => {
-            history.push("/");
+            props.history.push("/");
         })
     }
 
     async function clonarPlaylist(id_musicplaylist) {
         await api.post("/Playlist/" + id_musicplaylist + "/clone").then(
             response => {
-                history.push("/playlist/" + response.data.data.id_playlist);
+                props.history.push("/playlist/" + response.data.data.id_playlist);
             }
         );
 
     }
 
     async function playPlaylist(id_playlis) {
-        await api.post("/Playlist/" + id_playlis + "/play").then(
-            // response => {
-            //     history.push("/playlist/" + response.data.data.id_playlist);
-            // }
-        );
+        await api.post("/Playlist/" + id_playlis + "/play")
     }
 
     function selectMusic(id_musicplaylist) {
@@ -61,11 +58,7 @@ export default function Playlist({ match, history }) {
     }
 
     async function playPlaylistMusic(id_musicplaylist) {
-        await api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist").then(
-            // response => {
-            //     history.push("/playlist/" + response.data.data.id_playlist);
-            // }
-        );
+        await api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist");
     }
 
 
@@ -74,11 +67,11 @@ export default function Playlist({ match, history }) {
         async function loadPlaylist() {
             loadPlaylistMusics();
 
-            const response = await api.get('/Playlist/' + match.params.id_playlist);
+            const response = await api.get('/Playlist/' + props.id_playlist);
             setPlaylist(response.data.data);
 
             if (!response.data.data.id_playlist) {
-                history.push("/");
+                props.history.push("/");
                 return;
             }
 
@@ -87,7 +80,7 @@ export default function Playlist({ match, history }) {
         }
 
         async function loadPlaylistMusics() {
-            const response = await api.get('/Music/' + match.params.id_playlist + '/byPlaylist');
+            const response = await api.get('/Music/' + props.id_playlist + '/byPlaylist');
             setMusicsPlaylist(response.data.data);
             setLoadmusics(true);
 
@@ -95,55 +88,68 @@ export default function Playlist({ match, history }) {
 
         loadPlaylist();
 
-    }, [match.params.id_playlist])
+    }, [props.id_playlist])
 
     return (
         <div className="container-area-full">
-            <PopUp></PopUp>
+            <PopUp/>
 
             <div className={loadplaylist ? 'header-playlist header-playlist-show' : 'header-playlist'}>
+                <HeaderPlaylist
+                    playlist={playlist}
+                    buttons={[
+                        {
+                            text: 'Curtir',
+                            show: +props.usuario.id_usuario !== +playlist.id_usuario,
+                            icon: 'fa-heart'
 
-                <div className='capa-playlist'>
-                    <img src={playlist.st_capa} />
-                </div>
+                        },
+                        {
+                            text: 'Copiar',
+                            show: true,
+                            icon: 'fa-copy',
+                            action: () => clonarPlaylist(playlist.id_playlist)
 
-                <div className='capa-playlist-sobre'></div>
+                        },
+                        {
+                            text: 'Nova Música',
+                            show: (+props.usuario.id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1,
+                            icon: 'fa-plus',
+                            action: () =>  props.history.push('/playlist/' + playlist.id_playlist + '/new')
 
-                <div className='playlist-info'>
-                    <h1>{playlist.st_nome}</h1>
-                    <p>Criada em <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment></p>
-                    <p className='info-by'>By {playlist.st_nomeusuario}</p>
+                        },
+                        {
+                            text: 'Compartilhar',
+                            show: true,
+                            icon: 'fa-link'
 
-                    <div className='button-actions'>
-                        {+id_usuario !== +playlist.id_usuario && (
-                            <button> <i className="fa fa-heart"></i> Curtir</button>
-                        )}
+                        },
+                        {
+                            text: 'Editar',
+                            show: +props.usuario.id_usuario === +playlist.id_usuario,
+                            icon: 'fa-edit',
+                            action: () => props.history.push('/edit/' + playlist.id_playlist)
 
-                        <button onClick={() => clonarPlaylist(playlist.id_playlist)}> <i className="fa fa-copy"></i> Clonar</button>
+                        },
+                        {
+                            text: 'Excluir',
+                            show: +props.usuario.id_usuario === +playlist.id_usuario,
+                            icon: 'fa-trash',
+                            action: () => desativaPlaylist(playlist.id_playlist)
 
-                        {(+id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1 ? (
-                            <Link to={'/playlist/' + playlist.id_playlist + '/new'}>
-                                <button> <i className="fa fa-plus"></i> Nova Música</button>
-                            </Link>
-                        ) : <div></div>}
+                        },
+                        {
+                            text: 'Reproduzir',
+                            show: +props.usuario.bl_premium === 1,
+                            icon: 'fa-play',
+                            action: () => playPlaylist(playlist.id_playlist)
 
-                        <button> <i className="fa fa-link"></i> Compartilhar</button>
-
-                        {+id_usuario === +playlist.id_usuario && (
-                            <Link to={'/edit/' + playlist.id_playlist}>
-                                <button> <i className="fa fa-edit"></i> Editar</button>
-                            </Link>
-                        )}
-
-                        {+id_usuario === +playlist.id_usuario && (
-                            <button onClick={() => desativaPlaylist(playlist.id_playlist)}> <i className="fa fa-trash"></i> Excluir</button>
-                        )}
-
-                        <button onClick={() => playPlaylist(playlist.id_playlist)} > <i className="fa fa-play"></i> Reproduzir</button>
-
-                    </div>
-                </div>
+                        }
+                    ]}
+                />
             </div>
+
+
             {loadmusics && loadplaylist ? (
                 <div className="container-area">
                     <div>
@@ -155,7 +161,7 @@ export default function Playlist({ match, history }) {
                                     // onClick={() => selectMusic(music.id_musicplaylist)}
                                     >
                                         <ListMedia
-                                            hoverCapa={true}
+                                            hoverCapa={props.usuario.bl_premium}
                                             clickCapa={() => playPlaylistMusic(music.id_musicplaylist)}
                                             playlist={playlist}
                                             id_usuario={id_usuario}
@@ -173,7 +179,7 @@ export default function Playlist({ match, history }) {
 
                                                 }
                                             ]}
-                                        ></ListMedia>
+                                        />
                                     </li>
                                 ))}
                             </ul>

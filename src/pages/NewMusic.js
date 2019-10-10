@@ -1,28 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './NewMusic.css';
 import api from '../services/api';
 import Loading from '../components/Loading';
 import ListMedia from '../components/ListMedia';
-export default function NewMusic({ match }) {
+
+export default function NewMusic(props) {
 
     const [musics, setMusics] = useState([]);
-    const [loaded, setloaded] = useState(false);
+    const [loaded, setloaded] = useState(true);
 
     useEffect(() => {
-        async function getTopMusics() {
-            // const response = await api.get("/Usuario/null/getTopTracks");
-            // setMusics(response.data.data);
-            setloaded(true);
+
+        if (props.usuario.id_usuario) {
+
+            async function getTopMusics() {
+                setloaded(false);
+                const response = await api.get("/Usuario/null/getTopTracks");
+                setMusics(response.data.data);
+                setloaded(true);
+            }
+
+            if (!props.usuario.bl_integracao) {
+                setloaded(true);
+                return;
+            }
+
+            getTopMusics();
+
         }
 
-        getTopMusics();
-
-    }, [])
+    }, [props.usuario]);
 
     async function addMusic(id_music) {
-        const response = await api.post('/Music/', {
+        await api.post('/Music/', {
             'id_spotify': id_music,
-            'id_playlist': match.params.id_playlist
+            'id_playlist': props.params.id_playlist
         });
 
         setMusics(musics.filter(music => music.id_spotify !== id_music));
@@ -43,7 +55,7 @@ export default function NewMusic({ match }) {
                 <input
                     type="text"
                     placeholder="Escreva o nome de sua música"
-                    onKeyUp={e => buscaMusica(e.target.value)} />
+                    onKeyUp={e => buscaMusica(e.target.value)}/>
             </div>
             <div>
                 {loaded ? (
@@ -54,26 +66,16 @@ export default function NewMusic({ match }) {
                                 <ul>
                                     {musics.map(music => (
                                         <li>
+                                            <ListMedia key={music.id_spotify} music={music}
+                                                       buttons={[
+                                                           {
+                                                               text: 'Adicionar',
+                                                               show: true,
+                                                               action: () => addMusic(music.id_spotify)
 
-                                            <ListMedia music={music}
-                                                        buttons = {[
-                                                            {
-                                                                text: 'Adiconar',
-                                                                show: true,
-                                                                action: () => addMusic(music.id_spotify)
+                                                           }
+                                                       ]}/>
 
-                                                            }
-                                                        ]}></ListMedia>
-
-                                            {/* <img src={music.st_urlimagem} />
-                                            <div className="info-music">
-                                                <strong>{music.st_nome}</strong>
-                                                <p>Artista: {music.st_artista}</p>
-                                                <p>Album: {music.st_album}</p>
-                                            </div>
-                                            <div className="actions-buttons">
-                                                <button onClick={() => }>Adiconar</button>
-                                            </div> */}
                                         </li>
                                     ))}
                                 </ul>
@@ -81,12 +83,12 @@ export default function NewMusic({ match }) {
                             </div>
 
                         ) : (
-                                <div className="empty-response">Sem resultados!</div>
-                            )}
+                            <div className="empty-response">Sem resultados!</div>
+                        )}
                     </div>
                 ) : (
-                        <Loading></Loading>
-                    )}
+                    <Loading/>
+                )}
             </div>
         </div>
     );

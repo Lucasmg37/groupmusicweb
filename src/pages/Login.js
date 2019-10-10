@@ -43,8 +43,6 @@ export default function Login({ history }) {
             async function setLocalStorage() {
 
                 //Buscar configurações do usuário
-                await localStorage.setItem('bl_integracao', response.data.data.bl_integracao);
-                await localStorage.setItem('bl_premium', response.data.data.bl_premium);
                 await localStorage.setItem('st_token', response.data.data.st_token);
                 await localStorage.setItem('id_usuario', response.data.data.id_usuario);
             }

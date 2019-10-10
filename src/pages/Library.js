@@ -123,7 +123,7 @@ export default function Library({ history }) {
                                         <strong>{playlist.st_nome}</strong>
                                         <p>Data de criação: <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment><br />
                                             Número de músicas: {playlist.nu_music} <br />
-                                            {playlist.bl_sincronizado && (<i className="fab fa-spotify"></i>)}
+                                            {playlist.bl_sincronizado ? (<i className="fab fa-spotify"></i>) : (<i></i>)}
                                             {playlist.bl_privada ? (<i className="fa fa-lock"></i>) : (<i className="fa fa-unlock "></i>)}
 
                                         </p>
