@@ -1,16 +1,13 @@
 import React, {useState} from 'react';
-import Api from '../services/api';
-import api from '../services/api';
+import Api from "../services/api";
+import './Login.css';
 
-export default function Cadastro({history}) {
+export default function Recovery({history}) {
 
     const [email, setEmail] = useState('');
-    const [emailresend, setEmailresend] = useState('');
-    const [nome, setNome] = useState('');
-    const [senha, setSenha] = useState('');
-    const [repeatSenha, setRepeatSenha] = useState('');
     const [erro, setErro] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
+    const [emailresend, setEmailresend] = useState('');
     const [logging, setLogging] = useState(false);
 
     function sendActivateEmail() {
@@ -24,26 +21,18 @@ export default function Cadastro({history}) {
     async function handleSubmit(e) {
         e.preventDefault();
 
+        setLogging(true)
+
         setErro('');
         setCountNotActivate(false);
         setEmailresend('');
 
-        //Verificar a senha
-        if (senha !== repeatSenha) {
-            setErro("As senhas se diferem entre si.");
-            return false;
-        }
-
         var datacadastro = {
-            'st_login': email,
-            'st_senha': senha,
-            'st_nome': nome
+            'st_login': email
         };
 
-        setLogging(true);
-
-        api.post('/signup', datacadastro).then(response => {
-            history.push('/signup/success');
+        Api.post('/recovery', datacadastro).then(response => {
+            history.push('/recovery/send');
         }).catch(response => {
 
             setLogging(false);
@@ -59,32 +48,18 @@ export default function Cadastro({history}) {
     }
 
     return (
-
         <div className="container-login animate-up-opacity">
 
             <form className="form-login" onSubmit={handleSubmit}>
 
-                <h1>Crie a sua conta!</h1>
+                <h1>Recupere a sua senha!</h1>
 
                 <input type="email" required placeholder="Seu e-mail"
                        value={email}
                        onChange={e => setEmail(e.target.value)}/>
 
-                <input type="text" required placeholder="Seu nome"
-                       value={nome}
-                       onChange={e => setNome(e.target.value)}/>
-
-                <input type="password" required placeholder="Uma senha"
-                       value={senha}
-                       onChange={e => setSenha(e.target.value)}/>
-
-                <input type="password" required placeholder="Repita a senha"
-                       value={repeatSenha}
-                       onChange={e => setRepeatSenha(e.target.value)}/>
-
                 <button type="submit">
-
-                    {!logging ? (<span>Cadastrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
+                     {!logging ? (<span>Enviar e-mail para recuperação.</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
                 </button>
             </form>
 
@@ -95,10 +70,10 @@ export default function Cadastro({history}) {
             </div>
 
             <div>
-                <button onClick={() => history.push("/login")} className="link-button">Já tenho uma conta.</button>
+                <button onClick={() => history.push("/login")} className="link-button">Acessar minha conta.</button>
             </div>
 
         </div>
-
     )
+
 }

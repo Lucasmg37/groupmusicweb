@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Moment from 'react-moment';
-import { Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
 
 import api from '../services/api';
 import './Playlist.css';
@@ -19,8 +17,8 @@ export default function Playlist(props) {
 
     const id_usuario = localStorage.getItem("id_usuario");
 
-    async function desativaPlaylist(id_playlist) {
-        await api.delete("/Playlist/" + id_playlist).then(response => {
+    function desativaPlaylist(id_playlist) {
+        api.delete("/Playlist/" + id_playlist).then(response => {
             props.history.push("/");
         })
     }
@@ -34,8 +32,8 @@ export default function Playlist(props) {
 
     }
 
-    async function playPlaylist(id_playlis) {
-        await api.post("/Playlist/" + id_playlis + "/play")
+    function playPlaylist(id_playlis) {
+        api.post("/Playlist/" + id_playlis + "/play")
     }
 
     function selectMusic(id_musicplaylist) {
@@ -51,16 +49,14 @@ export default function Playlist(props) {
 
     }
 
-    async function removeMusicPlaylist(id_musicplaylist) {
-        await api.delete("/Music/" + id_musicplaylist);
+    function removeMusicPlaylist(id_musicplaylist) {
         setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
-
+        api.delete("/Music/" + id_musicplaylist);
     }
 
     async function playPlaylistMusic(id_musicplaylist) {
-        await api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist");
+        api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist");
     }
-
 
     useEffect(() => {
 
@@ -76,14 +72,12 @@ export default function Playlist(props) {
             }
 
             setLoadPlaylist(true);
-            // loadPlaylistMusics();
         }
 
         async function loadPlaylistMusics() {
             const response = await api.get('/Music/' + props.id_playlist + '/byPlaylist');
             setMusicsPlaylist(response.data.data);
             setLoadmusics(true);
-
         }
 
         loadPlaylist();
@@ -115,7 +109,7 @@ export default function Playlist(props) {
                             text: 'Nova Música',
                             show: (+props.usuario.id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0) || +playlist.bl_publicedit === 1,
                             icon: 'fa-plus',
-                            action: () =>  props.history.push('/playlist/' + playlist.id_playlist + '/new')
+                            action: () => props.history.push('/playlist/' + playlist.id_playlist + '/new')
 
                         },
                         {
@@ -140,7 +134,7 @@ export default function Playlist(props) {
                         },
                         {
                             text: 'Reproduzir',
-                            show: +props.usuario.bl_premium === 1,
+                            show: +props.usuario.bl_premium === 1 && +playlist.bl_sincronizado === 1,
                             icon: 'fa-play',
                             action: () => playPlaylist(playlist.id_playlist)
 
@@ -158,13 +152,13 @@ export default function Playlist(props) {
                                 {musicsPlaylist.map(music => (
                                     <li key={music.id_musicplaylist}
                                         className={+music.bl_selected === 1 ? 'list-playlist-select' : ''}
-                                    // onClick={() => selectMusic(music.id_musicplaylist)}
+                                        // onClick={() => selectMusic(music.id_musicplaylist)}
                                     >
                                         <ListMedia
                                             hoverCapa={props.usuario.bl_premium}
                                             clickCapa={() => playPlaylistMusic(music.id_musicplaylist)}
                                             playlist={playlist}
-                                            id_usuario={id_usuario}
+                                            usuario={props.usuario.id_usuario}
                                             music={music}
                                             buttons={[
                                                 {
@@ -174,7 +168,7 @@ export default function Playlist(props) {
                                                 },
                                                 {
                                                     text: 'Remover',
-                                                    show: +id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0 || +playlist.bl_publicedit === 1,
+                                                    show: +props.usuario.id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0 || +playlist.bl_publicedit === 1,
                                                     action: () => removeMusicPlaylist(music.id_musicplaylist)
 
                                                 }
@@ -186,8 +180,8 @@ export default function Playlist(props) {
                         ) : (<div className="empty-response">Nenhuma música nesta playlist!</div>)}
                     </div>
                 </div>) : (
-                    <Loading></Loading>
-                )}
+                <Loading></Loading>
+            )}
 
         </div>
 

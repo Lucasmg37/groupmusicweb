@@ -1,32 +1,34 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Api from '../services/api';
 import api from '../services/api';
 
-export default function Cadastro({history}) {
+export default function RecoveryForm({history, match}) {
 
     const [email, setEmail] = useState('');
     const [emailresend, setEmailresend] = useState('');
-    const [nome, setNome] = useState('');
     const [senha, setSenha] = useState('');
     const [repeatSenha, setRepeatSenha] = useState('');
     const [erro, setErro] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
     const [logging, setLogging] = useState(false);
 
-    function sendActivateEmail() {
-        if (emailresend) {
-            Api.post('Usuario/' + emailresend + '/resendEmail');
-        } else {
-            setCountNotActivate(false);
-        }
-    }
+
+    useEffect(() => {
+        //Buscar usuário a altera a senha
+        Api.get('/Recovery/' + match.params.hash).then(response => {
+            setEmail(response.data.data.st_login);
+        }).catch(() => {
+            history.push('/login');
+        })
+
+    }, []);
+
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         setErro('');
         setCountNotActivate(false);
-        setEmailresend('');
 
         //Verificar a senha
         if (senha !== repeatSenha) {
@@ -35,25 +37,16 @@ export default function Cadastro({history}) {
         }
 
         var datacadastro = {
-            'st_login': email,
             'st_senha': senha,
-            'st_nome': nome
         };
 
         setLogging(true);
 
-        api.post('/signup', datacadastro).then(response => {
-            history.push('/signup/success');
+        api.post('/Recovery/' + match.params.hash + '/saveRecovery', datacadastro).then(response => {
+            history.push('/login');
         }).catch(response => {
-
             setLogging(false);
-
-            if (+response.response.data.erro.code === 1) {
-                setCountNotActivate(true);
-                setEmailresend(email);
-            } else {
-                setErro(response.response.data.erro.message);
-            }
+            setErro(response.response.data.erro.message);
         })
 
     }
@@ -64,15 +57,11 @@ export default function Cadastro({history}) {
 
             <form className="form-login" onSubmit={handleSubmit}>
 
-                <h1>Crie a sua conta!</h1>
+                <h1>Altere a sua senha!</h1>
 
                 <input type="email" required placeholder="Seu e-mail"
                        value={email}
-                       onChange={e => setEmail(e.target.value)}/>
-
-                <input type="text" required placeholder="Seu nome"
-                       value={nome}
-                       onChange={e => setNome(e.target.value)}/>
+                       disabled={true}/>
 
                 <input type="password" required placeholder="Uma senha"
                        value={senha}
@@ -83,19 +72,15 @@ export default function Cadastro({history}) {
                        onChange={e => setRepeatSenha(e.target.value)}/>
 
                 <button type="submit">
-
-                    {!logging ? (<span>Cadastrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
+                    {!logging ? (<span>Salvar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
                 </button>
             </form>
 
             <div className={erro !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erro}</div>
-            <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Este e-mail já foi cadastrado mas
-                ainda não foi ativado.<br/>
-                <button onClick={() => sendActivateEmail()}>Clique aqui para receber um novo link de ativação</button>
-            </div>
 
             <div>
-                <button onClick={() => history.push("/login")} className="link-button">Já tenho uma conta.</button>
+                <button onClick={() => history.push("/login")} className="link-button">Não quero alterar minha senha.
+                </button>
             </div>
 
         </div>

@@ -12,7 +12,7 @@ export default function ListMedia(props) {
 
                 {props.hoverCapa && (
                     <div className="hover-img">
-                        <i className="fa fa-play"></i>
+                        <i className="fa fa-play"/>
                     </div>
                 )}
 
@@ -29,16 +29,9 @@ export default function ListMedia(props) {
 
                 {
                     props.buttons.map(button => (
-                        <ButtonAction text={button.text} show={button.show} action={button.action} ></ButtonAction>
+                        <ButtonAction text={button.text} show={button.show} action={button.action} />
                     ))
                 }
-
-                {/* <button>Copiar para...</button>
-
-                {(+props.id_usuario === +props.playlist.id_usuario &&
-                    +props.playlist.bl_publicedit === 0) || +props.playlist.bl_publicedit === 1 ? (
-                        <button onClick={() => removeMusicPlaylist(props.music.id_musicplaylist)}>Remover</button>
-                    ) : <div></div>} */}
 
             </div>
         </div>

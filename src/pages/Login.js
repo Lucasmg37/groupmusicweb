@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import './Login.css'
 
 import logo from '../assets/img/logo.png';
 import api from '../services/api.js';
 
-export default function Login({ history }) {
+export default function Login({history}) {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -13,7 +13,7 @@ export default function Login({ history }) {
     const [emailresend, setEmailresend] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
 
-    function sendActivateEmail(){
+    function sendActivateEmail() {
         if (emailresend) {
             api.post('Usuario/' + emailresend + '/resendEmail');
         } else {
@@ -25,7 +25,7 @@ export default function Login({ history }) {
     useEffect(() => {
         localStorage.removeItem("st_token");
         localStorage.removeItem("id_usuario");
-    }, [])
+    }, []);
 
     async function handleSumbmit(e) {
         e.preventDefault();
@@ -54,7 +54,7 @@ export default function Login({ history }) {
 
             setLogging(false);
 
-            if (+response.response.data.code === 1 ) {
+            if (+response.response.data.code === 1) {
                 setCountNotActivate(true);
                 setEmailresend(username);
             } else {
@@ -67,30 +67,42 @@ export default function Login({ history }) {
     }
 
     return (
-        <div className="container-login">
+        <div className="container-login animate-up-opacity">
 
             <form className="form-login" onSubmit={handleSumbmit}>
-                <img src={logo} alt="Group List" />
+                <img src={logo} alt="Group List"/>
+
                 <input type="text" placeholder="E-mail"
-                    required
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                ></input>
+                       required
+                       value={username}
+                       onChange={e => setUsername(e.target.value)}
+                />
+
                 <input type="password" placeholder="Senha"
-                    required
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}></input>
+                       required
+                       value={password}
+                       onChange={e => setPassword(e.target.value)}/>
+
                 <button type="submit">
-                    {!logging ? (<span>Entrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
+                    {!logging ? (<span>Entrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"/>)}
                 </button>
+
             </form>
 
-            <div className={ erroLogin !== '' ? 'erro-box erro-box-show' : 'erro-box' }>{erroLogin}</div>
-            
-            <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Enviamos um email de ativação para o seu email.<br/>
-            <button onClick={() => sendActivateEmail() } >Clique aqui para receber um novo link de ativação</button>
+            <div className={erroLogin !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erroLogin}</div>
+
+            <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Enviamos um email de ativação para
+                o seu email.<br/>
+                <button onClick={() => sendActivateEmail()}>Clique aqui para receber um novo link de ativação</button>
             </div>
-            <div><button onClick={() => history.push("/signup")} className="link-button">Não tenho uma conta.</button></div>
+
+            <div>
+                <button onClick={() => history.push("/signup")} className="link-button">Não tenho uma conta.</button>
+            </div>
+
+            <div>
+                <button onClick={() => history.push("/recovery")} className="link-button">Esqueci a minha senha.</button>
+            </div>
 
 
         </div>

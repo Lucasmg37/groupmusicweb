@@ -45,42 +45,49 @@ export default function Painel({history}) {
 
     useEffect(() => {
 
-        async function startEvents(){
+        async function getUser() {
+            await api.get('/Usuario/').then(response => {
+                    setUsuario(response.data.data);
+                }
+            );
+        }
 
-            const responseuser = await api.get('/Usuario/');
+        getUser();
+    }, []);
 
-            await setUsuario(responseuser.data.data);
 
-            console.log(responseuser);
-            console.log(usuario);
+    useEffect(() => {
 
-            await api.get('/Usuario/null/verificaautenticacao').then(response => {
+        function startEvents() {
+
+            api.get('/Usuario/null/verificaautenticacao').then(response => {
 
             }).catch(response => {
                 history.push("/login");
             });
 
-            const response = await api.get('/Spotify/null/VerificaIntegracao');
-            setIntegracao(response.data.data);
+            api.get('/Spotify/null/VerificaIntegracao').then(response => {
+                setIntegracao(response.data.data);
 
-            getInterval();
+            });
 
         }
 
-        startEvents();
+        if (usuario.id_usuario) {
+            startEvents();
 
-    }, []);
+            if (usuario.bl_integracao) {
+                getInterval();
+            }
+        }
+
+    }, [usuario]);
 
 
     async function getInterval() {
 
-        let bl_integracao = await localStorage.getItem('bl_integracao');
-
         await setInterval(() => {
-            if (bl_integracao) {
                 getCurrentPlayer();
-
-            }
         }, 5000);
 
     }
@@ -103,7 +110,7 @@ export default function Painel({history}) {
                         <li><i className="fa fa-list"/> <span>Biblioteca</span></li>
                     </Link>
 
-                    {+integracao.bl_integracao === 1 && (
+                    {+usuario.bl_integracao === 1 && (
                         <Link to="/spotify/">
                             <li><i className="fab fa-spotify"/> <span>Spotify</span></li>
                         </Link>
@@ -141,7 +148,7 @@ export default function Painel({history}) {
                                   usuario={usuario}/>)}/>
 
                     <Route path="/playlist/:id_playlist/new" exact render={({match, history}) => (
-                               <NewMusic history={history} params={match.params} usuario={usuario}/>)}/>
+                        <NewMusic history={history} params={match.params} usuario={usuario}/>)}/>
 
                     <Route path="/perfil/" exact render={() => (<Perfil integracao={integracao}/>)}/>
                     <Route path="/spotify" exact component={Spotify}/>

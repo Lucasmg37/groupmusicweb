@@ -48,10 +48,21 @@ export default function NewMusic(props) {
         setloaded(true);
     }
 
+    async function playMusicDirectSpotify(id_spotify) {
+        await api.post("/Playlist/" + id_spotify + "/playMusicPlaylistDirect");
+    }
+
     return (
         <div className="container-area">
             <div className="area-busca">
                 <h1>Adicione músicas</h1>
+
+                <div>
+                    <button onClick={() => props.history.push('/playlist/' + props.params.id_playlist)}
+                            className='btn-secundary'><i className='fa fa-arrow-left'></i> Voltar para playlist
+                    </button>
+                </div>
+
                 <input
                     type="text"
                     placeholder="Escreva o nome de sua música"
@@ -61,24 +72,20 @@ export default function NewMusic(props) {
                 {loaded ? (
                     <div>
                         {musics ? (
-                            <div className="">
+                            <div>
 
-                                <ul>
                                     {musics.map(music => (
-                                        <li>
-                                            <ListMedia key={music.id_spotify} music={music}
-                                                       buttons={[
-                                                           {
-                                                               text: 'Adicionar',
-                                                               show: true,
-                                                               action: () => addMusic(music.id_spotify)
-
-                                                           }
-                                                       ]}/>
-
-                                        </li>
+                                        <ListMedia key={music.id_spotify} music={music}
+                                                   hoverCapa={true}
+                                                   clickCapa={() => playMusicDirectSpotify(music.id_spotify)}
+                                                   buttons={[
+                                                       {
+                                                           text: 'Adicionar',
+                                                           show: true,
+                                                           action: () => addMusic(music.id_spotify)
+                                                       }
+                                                   ]}/>
                                     ))}
-                                </ul>
 
                             </div>
 

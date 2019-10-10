@@ -43,11 +43,11 @@ export default function Perfil({ match, props }) {
 
     const onSuccess = async function (response) {
         await api.post("/Spotify", response);
-    }
+    };
 
     const onFailure = function (response) {
 
-    }
+    };
 
     const saveConfigsIntegracao = () => {
         api.post("/Config", {
@@ -57,6 +57,10 @@ export default function Perfil({ match, props }) {
             bl_sincronizaclone,
             bl_deleteplaylistspotify
         })
+    };
+
+    function desconectSpotify() {
+        api.post("/Spotify/null/desconect");
     }
 
     return (
@@ -85,7 +89,7 @@ export default function Perfil({ match, props }) {
                         name="bl_sincronizaclone"
                         onChangeFunction={() => setBl_sincronizaclone(!bl_sincronizaclone)}
                         checked={bl_sincronizaclone}
-                    ></Toggle>
+                    />
                     <label for="bl_sincronizaclone">Sincronizar playlists clonadas automáticamente.</label>
                 </div>
 
@@ -94,7 +98,7 @@ export default function Perfil({ match, props }) {
                         name="bl_atualizaspotify"
                         onChangeFunction={() => setBl_atualizaspotify(!bl_atualizaspotify)}
                         checked={bl_atualizaspotify}
-                    ></Toggle>
+                    />
                     <label for="bl_atualizaspotify">Atualizar playlists sincronizadas do spotify automáticamente</label>
                 </div>
 
@@ -103,20 +107,20 @@ export default function Perfil({ match, props }) {
                         name="bl_buscamudancasspotify"
                         onChangeFunction={() => setBl_buscamudancasspotify(!bl_buscamudancasspotify)}
                         checked={bl_buscamudancasspotify}
-                    ></Toggle>
+                    />
                     <label for="bl_buscamudancasspotify">Buscar mudanças em playlists do spotify automáticamente</label>
                 </div>
 
-                <div className="input-toggle">
-                    <Toggle
-                        name="bl_deleteplaylistspotify"
-                        onChangeFunction={() => setBl_deleteplaylistspotify(!bl_deleteplaylistspotify)}
-                        checked={bl_deleteplaylistspotify}
-                    ></Toggle>
-                    <label for="bl_buscamudancasspotify">Deletar playlist do Spotify.</label>
-                </div>
+                {/*<div className="input-toggle">*/}
+                    {/*<Toggle*/}
+                        {/*name="bl_deleteplaylistspotify"*/}
+                        {/*onChangeFunction={() => setBl_deleteplaylistspotify(!bl_deleteplaylistspotify)}*/}
+                        {/*checked={bl_deleteplaylistspotify}*/}
+                    {/*/>*/}
+                    {/*<label for="bl_buscamudancasspotify">Deletar playlist do Spotify.</label>*/}
+                {/*</div>*/}
             
-                <div> <button className="desconect-spotify"> Desconectar Spotify</button> </div>
+                <div onClick={desconectSpotify}> <button  className="desconect-spotify"> Desconectar Spotify</button> </div>
                 <div> <button onClick={saveConfigsIntegracao} className="button-primary"> Salvar configurações</button> </div>
 
             </div>

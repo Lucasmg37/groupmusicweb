@@ -31,7 +31,7 @@ export default function SignUpSuccess({ history, match }) {
     }, []);
 
     return (
-        <div className="container-center">
+        <div className="container-center animate-up-opacity">
             {!loading ? (
                 <div>
 
