@@ -44,17 +44,16 @@ export default function Painel({history}) {
     }
 
     useEffect(() => {
-
-        async function getUser() {
-            await api.get('/Usuario/').then(response => {
-                    setUsuario(response.data.data);
-                }
-            );
-        }
-
         getUser();
     }, []);
 
+
+    async function getUser() {
+        await api.get('/Usuario/').then(response => {
+                setUsuario(response.data.data);
+            }
+        );
+    }
 
     useEffect(() => {
 
@@ -68,7 +67,6 @@ export default function Painel({history}) {
 
             api.get('/Spotify/null/VerificaIntegracao').then(response => {
                 setIntegracao(response.data.data);
-
             });
 
         }
@@ -150,7 +148,7 @@ export default function Painel({history}) {
                     <Route path="/playlist/:id_playlist/new" exact render={({match, history}) => (
                         <NewMusic history={history} params={match.params} usuario={usuario}/>)}/>
 
-                    <Route path="/perfil/" exact render={() => (<Perfil integracao={integracao}/>)}/>
+                    <Route path="/perfil/" exact render={() => (<Perfil usuario={usuario} setUsuario={getUser}/>)}/>
                     <Route path="/spotify" exact component={Spotify}/>
                     <Route path="/library/" exact component={Library}/>
                 </Switch>

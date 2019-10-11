@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import Loading from '../components/Loading';
-import PopUp from './PopUp';
 
 export default function Spotify() {
 
@@ -15,7 +14,7 @@ export default function Spotify() {
                 music.bl_sincronizing = 1;
             }
             return music;
-        }, id))
+        }, id));
 
         const response = await api.post("/Spotify/" + id + "/playlistSpotifyToList");
 
@@ -39,7 +38,7 @@ export default function Spotify() {
 
         loadPlaylist();
 
-    }, [])
+    }, []);
 
 
     return (
@@ -60,8 +59,8 @@ export default function Spotify() {
                                     </div>
 
                                     <div className="actions-buttons">
-                                        {music.bl_sincronizado == 1 ? (
-                                            <div></div>
+                                        {+music.bl_sincronizado === 1 ? (
+                                            <div/>
                                         ) : (
                                                 (
                                                     <button onClick={() => sincrinizarSpotifyToList(music.id)}>
