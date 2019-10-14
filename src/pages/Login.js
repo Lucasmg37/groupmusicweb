@@ -22,8 +22,6 @@ export default function Login({history}) {
 
         setErroLogin('');
 
-        console.log(response);
-
         await api.post("/Spotify/Login/LoginBySpotify", response).then(response => {
 
             async function setLocalStorage() {
