@@ -52,7 +52,9 @@ export default function Painel({history}) {
         await api.get('/Usuario/').then(response => {
                 setUsuario(response.data.data);
             }
-        );
+        ).catch(() => {
+            history.push('/login');
+        });
     }
 
     useEffect(() => {
@@ -85,7 +87,7 @@ export default function Painel({history}) {
     async function getInterval() {
 
         await setInterval(() => {
-                getCurrentPlayer();
+            getCurrentPlayer();
         }, 5000);
 
     }
@@ -137,8 +139,16 @@ export default function Painel({history}) {
 
                 <Switch>
                     <Route path="/" exact component={Home}/>
-                    <Route path="/new/" exact component={NewPlaylist}/>
-                    <Route path="/edit/:id_playlist" exact component={NewPlaylist}/>
+
+                    <Route path="/new/" exact render={({match, history}) => (
+                        <NewPlaylist id_playlist={match.params.id_playlist} usuario={usuario} history={history}/>
+                    )}/>
+
+
+                    <Route path="/edit/:id_playlist" exact render={({match, history}) => (
+                        <NewPlaylist id_playlist={match.params.id_playlist} usuario={usuario} history={history}/>
+                    )}/>
+
                     <Route path="/playlist/" exact component={PlaylistSource}/>
 
                     <Route path="/playlist/:id_playlist" exact render={({match, history}) => (

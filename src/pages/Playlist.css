@@ -19,7 +19,7 @@
     height: 300px;
     background: rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 100%;
     overflow: hidden;
     /* border-radius: 0 0 10px 10px; */

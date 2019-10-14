@@ -32,13 +32,12 @@ export default function NewMusic(props) {
     }, [props.usuario]);
 
     async function addMusic(id_music) {
-        await api.post('/Music/', {
+        api.post('/Music/', {
             'id_spotify': id_music,
             'id_playlist': props.params.id_playlist
         });
 
         setMusics(musics.filter(music => music.id_spotify !== id_music));
-
     }
 
     async function buscaMusica(source) {
@@ -54,12 +53,12 @@ export default function NewMusic(props) {
 
     return (
         <div className="container-area">
-            <div className="area-busca">
+            <div className="area-busca animate-opacity-down">
                 <h1>Adicione músicas</h1>
 
                 <div>
                     <button onClick={() => props.history.push('/playlist/' + props.params.id_playlist)}
-                            className='btn-secundary'><i className='fa fa-arrow-left'></i> Voltar para playlist
+                            className='btn-secundary'><i className='fa fa-arrow-left'/> Voltar para playlist
                     </button>
                 </div>
 
@@ -74,18 +73,18 @@ export default function NewMusic(props) {
                         {musics ? (
                             <div>
 
-                                    {musics.map(music => (
-                                        <ListMedia key={music.id_spotify} music={music}
-                                                   hoverCapa={true}
-                                                   clickCapa={() => playMusicDirectSpotify(music.id_spotify)}
-                                                   buttons={[
-                                                       {
-                                                           text: 'Adicionar',
-                                                           show: true,
-                                                           action: () => addMusic(music.id_spotify)
-                                                       }
-                                                   ]}/>
-                                    ))}
+                                {musics.map(music => (
+                                    <ListMedia key={music.id_spotify} music={music}
+                                               hoverCapa={props.usuario.bl_premium}
+                                               clickCapa={() => playMusicDirectSpotify(music.id_spotify)}
+                                               buttons={[
+                                                   {
+                                                       text: 'Adicionar',
+                                                       show: true,
+                                                       action: () => addMusic(music.id_spotify)
+                                                   }
+                                               ]}/>
+                                ))}
 
                             </div>
 

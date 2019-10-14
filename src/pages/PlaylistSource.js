@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import Moment from "react-moment";
 import api from "../services/api";
 import Loading from "../components/Loading";
@@ -8,7 +8,7 @@ export default function PlaylistSource({history}) {
     const [playlists, setPlaylists] = useState({});
     const [loaded, setLoaded] = useState(false);
 
-    function openPlaylist(id_playlist){
+    function openPlaylist(id_playlist) {
         history.push("/playlist/" + id_playlist);
     }
 
@@ -21,7 +21,7 @@ export default function PlaylistSource({history}) {
 
         buscaTopPlaylists();
 
-    }, [])
+    }, []);
 
     async function buscaPlaylist(search) {
         const response = await api.get("Playlist/null/getByName?search=" + search);
@@ -30,13 +30,13 @@ export default function PlaylistSource({history}) {
 
     return (
         <div className="container-area">
-            <div >
+            <div>
                 <div className="area-busca">
                     <h1>Descubra novas playlists</h1>
                     <input
                         placeholder="Digite aqui um nome de playlist..."
                         type="text"
-                        onKeyUp={e => buscaPlaylist(e.target.value)} />
+                        onKeyUp={e => buscaPlaylist(e.target.value)}/>
                 </div>
             </div>
 
@@ -45,14 +45,16 @@ export default function PlaylistSource({history}) {
                     {playlists !== undefined && playlists.length > 0 ? (
                         <ul>
                             {playlists.map(playlist => (
-                                <li onClick={() => openPlaylist(playlist.id_playlist)} key={playlist.id_playlist} >
-                                    <img src={playlist.st_capa} />
+                                <li onClick={() => openPlaylist(playlist.id_playlist)} key={playlist.id_playlist}>
+                                    <img src={playlist.st_capa}/>
                                     <div className="info-music">
                                         <strong>{playlist.st_nome}</strong>
-                                        <p>Data de criação: <Moment format="DD/MM/YYYY">{playlist.dt_create}</Moment><br />
-                                            Criada por: {playlist.st_nomeusuario} <br />
-                                            Número de músicas: {playlist.nu_music} <br />
-                                            {playlist.bl_sincronizado && (<span>Disponível no Spotify <i className="fab fa-spotify"></i></span>)}
+                                        <p>Data de criação: <Moment
+                                            format="DD/MM/YYYY">{playlist.dt_create}</Moment><br/>
+                                            Criada por: {playlist.st_nomeusuario} <br/>
+                                            Número de músicas: {playlist.nu_music} <br/>
+                                            {playlist.bl_sincronizado === 1 && (
+                                                <span>Disponível no Spotify <i className="fab fa-spotify"/></span>)}
 
                                         </p>
                                     </div>
@@ -63,8 +65,8 @@ export default function PlaylistSource({history}) {
 
                 </div>
             ) : (
-                    <Loading></Loading>
-                )}
+                <Loading/>
+            )}
         </div>
     );
 

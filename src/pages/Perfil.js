@@ -10,10 +10,8 @@ export default function Perfil(props) {
 
     const clientId = "b79a6f7b9eda475da08cd7d365b306c6";
     const redirectUri = "http://localhost:3000/Perfil/";
-    // const redirectUri = "http://groupmusicapi.lucasjunior.com.br/SaveSpotify/"
     const scopes = "user-read-private user-read-email user-read-recently-played user-top-read user-library-read user-library-modify user-read-playback-state user-read-currently-playing user-modify-playback-state playlist-read-collaborative playlist-modify-private playlist-modify-public playlist-read-private streaming app-remote-control";
 
-    const [integracao, setIntegracao] = useState({});
     const [bl_sincronizaclone, setBl_sincronizaclone] = useState(false);
     const [id_config, setId_config] = useState('');
     const [bl_atualizaspotify, setBl_atualizaspotify] = useState(false);

@@ -54,7 +54,6 @@
     display: flex;
     flex-direction: row;
     grid-gap: 50px;
-    margin-top: 50px;
     margin-left: auto;
     margin-top: auto;
     margin-bottom: auto;
@@ -84,4 +83,21 @@
 .link-button:hover{
     color: #ddd;
     transform: translateY(-2px);
+}
+
+.animate-opacity-down {
+    animation: opacity-down .5s ease-out;
+}
+
+@keyframes opacity-down {
+
+    from {
+        transform: translateY(-300px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }

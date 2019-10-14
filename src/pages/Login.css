@@ -49,7 +49,7 @@
     margin: auto;
 }
 
-.container-login form input, .container-login form button {
+.container-login form input, .container-login form button, .btn-connect-spotify button {
     padding: 15px 5px;
     margin-top: 10px;
     border: 0;
@@ -59,7 +59,16 @@
     color: #ddd;
 }
 
-.container-login form button {
+.btn-connect-spotify {
+    width: 400px;
+    display: flex;
+}
+
+.btn-connect-spotify button {
+    width: 100%;
+}
+
+.container-login form button, .btn-connect-spotify button {
     background: #54B25D;
     color: #fff;
     cursor: pointer;

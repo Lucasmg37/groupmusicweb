@@ -1,8 +1,13 @@
 import React, {useState} from 'react';
 import Api from '../services/api';
 import api from '../services/api';
+import SpotifyLogin from "react-spotify-login";
 
 export default function Cadastro({history}) {
+
+    const clientId = "b79a6f7b9eda475da08cd7d365b306c6";
+    const redirectUri = "http://localhost:3000/Perfil/";
+    const scopes = "user-read-private user-read-email user-read-recently-played user-top-read user-library-read user-library-modify user-read-playback-state user-read-currently-playing user-modify-playback-state playlist-read-collaborative playlist-modify-private playlist-modify-public playlist-read-private streaming app-remote-control";
 
     const [email, setEmail] = useState('');
     const [emailresend, setEmailresend] = useState('');
@@ -12,6 +17,30 @@ export default function Cadastro({history}) {
     const [erro, setErro] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
     const [logging, setLogging] = useState(false);
+
+
+    const onSuccess = async function (response) {
+
+        setErro('');
+
+        console.log(response);
+
+        await api.post("/Spotify/Login/SignInBySpotify", response).then(() => {
+            history.push('/signup/success');
+        }).catch(erro => {
+            if (+erro.response.data.erro.code === 1) {
+                setCountNotActivate(true);
+                setEmailresend(email);
+            } else {
+                setErro(erro.response.data.erro.message);
+            }
+        });
+    };
+
+    const onFailure = function (response) {
+
+    };
+
 
     function sendActivateEmail() {
         if (emailresend) {
@@ -87,6 +116,16 @@ export default function Cadastro({history}) {
                     {!logging ? (<span>Cadastrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"></i>)}
                 </button>
             </form>
+
+            <div className='btn-connect-spotify'>
+                <SpotifyLogin clientId={clientId}
+                              redirectUri={redirectUri}
+                              onSuccess={onSuccess}
+                              onFailure={onFailure}
+                              scope={scopes}
+                >Entrar com o Spotify <i className='fab fa-spotify'/></SpotifyLogin>
+            </div>
+
 
             <div className={erro !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erro}</div>
             <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Este e-mail já foi cadastrado mas

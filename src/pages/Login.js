@@ -3,8 +3,13 @@ import './Login.css'
 
 import logo from '../assets/img/logo.png';
 import api from '../services/api.js';
+import SpotifyLogin from "react-spotify-login";
 
 export default function Login({history}) {
+
+    const clientId = "b79a6f7b9eda475da08cd7d365b306c6";
+    const redirectUri = "http://localhost:3000/Perfil/";
+    const scopes = "user-read-private user-read-email user-read-recently-played user-top-read user-library-read user-library-modify user-read-playback-state user-read-currently-playing user-modify-playback-state playlist-read-collaborative playlist-modify-private playlist-modify-public playlist-read-private streaming app-remote-control";
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -12,6 +17,41 @@ export default function Login({history}) {
     const [erroLogin, setErroLogin] = useState('');
     const [emailresend, setEmailresend] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
+
+    const onSuccess = async function (response) {
+
+        setErroLogin('');
+
+        console.log(response);
+
+        await api.post("/Spotify/Login/LoginBySpotify", response).then(response => {
+
+            async function setLocalStorage() {
+
+                //Buscar configurações do usuário
+                await localStorage.setItem('st_token', response.data.data.st_token);
+                await localStorage.setItem('id_usuario', response.data.data.id_usuario);
+            }
+
+            setLocalStorage();
+            window.location.href = "http://localhost:3000";
+
+        }).catch(erro => {
+
+            if (+erro.response.data.erro.code === 1) {
+                setCountNotActivate(true);
+                setEmailresend(username);
+            } else {
+                setErroLogin(erro.response.data.erro.message);
+            }
+
+        });
+    };
+
+    const onFailure = function (response) {
+
+    };
+
 
     function sendActivateEmail() {
         if (emailresend) {
@@ -89,6 +129,15 @@ export default function Login({history}) {
 
             </form>
 
+            <div className='btn-connect-spotify'>
+                <SpotifyLogin clientId={clientId}
+                              redirectUri={redirectUri}
+                              onSuccess={onSuccess}
+                              onFailure={onFailure}
+                              scope={scopes}
+                >Entrar com o Spotify <i className='fab fa-spotify'/></SpotifyLogin>
+            </div>
+
             <div className={erroLogin !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erroLogin}</div>
 
             <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>Enviamos um email de ativação para
@@ -101,7 +150,8 @@ export default function Login({history}) {
             </div>
 
             <div>
-                <button onClick={() => history.push("/recovery")} className="link-button">Esqueci a minha senha.</button>
+                <button onClick={() => history.push("/recovery")} className="link-button">Esqueci a minha senha.
+                </button>
             </div>
 
 

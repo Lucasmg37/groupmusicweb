@@ -15,8 +15,6 @@ export default function Playlist(props) {
     const [loadmusics, setLoadmusics] = useState(false);
     const [loadplaylist, setLoadPlaylist] = useState(false);
 
-    const id_usuario = localStorage.getItem("id_usuario");
-
     function desativaPlaylist(id_playlist) {
         api.delete("/Playlist/" + id_playlist).then(response => {
             props.history.push("/");
@@ -49,6 +47,16 @@ export default function Playlist(props) {
 
     }
 
+    async function sincronizar(id_playlist) {
+        setLoadPlaylist(false);
+        await api.post("/Playlist/" + id_playlist + "/sincronizar").finally(
+            () => {
+                loadPlaylistMusics();
+                setLoadPlaylist(true);
+            }
+        );
+    }
+
     function removeMusicPlaylist(id_musicplaylist) {
         setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
         api.delete("/Music/" + id_musicplaylist);
@@ -74,15 +82,15 @@ export default function Playlist(props) {
             setLoadPlaylist(true);
         }
 
-        async function loadPlaylistMusics() {
-            const response = await api.get('/Music/' + props.id_playlist + '/byPlaylist');
-            setMusicsPlaylist(response.data.data);
-            setLoadmusics(true);
-        }
-
         loadPlaylist();
 
-    }, [props.id_playlist])
+    }, [props.id_playlist]);
+
+    async function loadPlaylistMusics() {
+        const response = await api.get('/Music/' + props.id_playlist + '/byPlaylist');
+        setMusicsPlaylist(response.data.data);
+        setLoadmusics(true);
+    }
 
     return (
         <div className="container-area-full">
@@ -138,6 +146,13 @@ export default function Playlist(props) {
                             icon: 'fa-play',
                             action: () => playPlaylist(playlist.id_playlist)
 
+                        },
+                        {
+                            text: 'Sincronizar',
+                            show: +props.usuario.bl_integracao === 1 && +playlist.bl_sincronizado === 1 && +props.usuario.id_usuario === +playlist.id_usuario,
+                            icon: 'fa-exchange-alt',
+                            action: () => sincronizar(playlist.id_playlist)
+
                         }
                     ]}
                 />
@@ -161,11 +176,11 @@ export default function Playlist(props) {
                                             usuario={props.usuario.id_usuario}
                                             music={music}
                                             buttons={[
-                                                {
-                                                    text: 'Copiar para...',
-                                                    show: true,
-
-                                                },
+                                                // {
+                                                //     text: 'Copiar para...',
+                                                //     show: true,
+                                                //
+                                                // },
                                                 {
                                                     text: 'Remover',
                                                     show: +props.usuario.id_usuario === +playlist.id_usuario && +playlist.bl_publicedit === 0 || +playlist.bl_publicedit === 1,
