@@ -74,7 +74,7 @@ export default function Login({history}) {
         setEmailresend('');
 
         await api.post('/Login', {
-            'st_login': username,
+            'st_email': username,
             'st_senha': password
         }).then(response => {
 

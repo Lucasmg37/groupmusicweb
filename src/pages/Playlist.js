@@ -87,7 +87,7 @@ export default function Playlist(props) {
     }, [props.id_playlist]);
 
     async function loadPlaylistMusics() {
-        const response = await api.get('/Music/' + props.id_playlist + '/byPlaylist');
+        const response = await api.get('/Playlist/getMusics/' + props.id_playlist);
         setMusicsPlaylist(response.data.data);
         setLoadmusics(true);
     }
