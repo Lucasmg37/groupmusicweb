@@ -61,15 +61,15 @@ export default function Painel({history}) {
 
         function startEvents() {
 
-            api.get('/Usuario/null/verificaautenticacao').then(response => {
+            // api.get('/Usuario/null/verificaautenticacao').then(response => {
 
-            }).catch(response => {
-                history.push("/login");
-            });
+            // }).catch(response => {
+            //     history.push("/login");
+            // });
 
-            api.get('/Spotify/null/VerificaIntegracao').then(response => {
-                setIntegracao(response.data.data);
-            });
+            // api.get('/Spotify/null/VerificaIntegracao').then(response => {
+            //     setIntegracao(response.data.data);
+            // });
 
         }
 
@@ -86,9 +86,9 @@ export default function Painel({history}) {
 
     async function getInterval() {
 
-        await setInterval(() => {
-            getCurrentPlayer();
-        }, 5000);
+        // await setInterval(() => {
+        //     getCurrentPlayer();
+        // }, 5000);
 
     }
 

@@ -59,7 +59,7 @@ export default function Playlist(props) {
 
     function removeMusicPlaylist(id_musicplaylist) {
         setMusicsPlaylist(musicsPlaylist.filter(musicsPlaylist => musicsPlaylist.id_musicplaylist !== id_musicplaylist));
-        api.delete("/Music/" + id_musicplaylist);
+        api.delete("/Playlist/removeMusic/" + id_musicplaylist);
     }
 
     async function playPlaylistMusic(id_musicplaylist) {

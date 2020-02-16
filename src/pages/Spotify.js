@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import api from '../services/api';
 import Loading from '../components/Loading';
 
@@ -16,7 +16,7 @@ export default function Spotify() {
             return music;
         }, id));
 
-        const response = await api.post("/Spotify/" + id + "/playlistSpotifyToList");
+        const response = await api.post("/Playlist/getPlaylistSpotify/" + id);
 
         setMusicsPlaylist(musicsPlaylist.map(music => {
             if (music.id === id) {
@@ -31,7 +31,7 @@ export default function Spotify() {
     useEffect(() => {
 
         async function loadPlaylist() {
-            const response = await api.get("/Spotify/NULL/getPlaylistsSpotifybyUser");
+            const response = await api.get("/Playlist/getSpotify");
             setMusicsPlaylist(response.data.data);
             setLoaded(true);
         }
@@ -52,8 +52,8 @@ export default function Spotify() {
                     {musicsPlaylist.length > 0 ? (
                         <ul>
                             {musicsPlaylist.map(music => (
-                                <li key={music.id_musicplaylist}>
-                                    <img src={music.images[0].url} />
+                                <li key={music.id}>
+                                    <img src={music.image}/>
                                     <div className="info-music">
                                         <strong>{music.name}</strong>
                                     </div>
@@ -62,16 +62,16 @@ export default function Spotify() {
                                         {+music.bl_sincronizado === 1 ? (
                                             <div/>
                                         ) : (
-                                                (
-                                                    <button onClick={() => sincrinizarSpotifyToList(music.id)}>
-                                                        {+music.bl_sincronizing === 1 ? (
-                                                            <span><i className="fa fa-sync animate-rotate"></i> Sincronizando</span>
-                                                        ) : (
-                                                                <span> <i className="fa fa-sync"></i> Sincronizar</span>
-                                                            )}
-                                                    </button>
-                                                )
-                                            )}
+                                            (
+                                                <button onClick={() => sincrinizarSpotifyToList(music.id)}>
+                                                    {+music.bl_sincronizing === 1 ? (
+                                                        <span><i className="fa fa-sync animate-rotate"></i> Sincronizando</span>
+                                                    ) : (
+                                                        <span> <i className="fa fa-sync"></i> Sincronizar</span>
+                                                    )}
+                                                </button>
+                                            )
+                                        )}
 
                                     </div>
 
@@ -81,8 +81,8 @@ export default function Spotify() {
                     ) : (<div className="empty-response">Nenhuma playlist encontrada :)</div>)}
                 </div>
             ) : (
-                    <Loading></Loading>
-                )}
+                <Loading></Loading>
+            )}
 
 
         </div>

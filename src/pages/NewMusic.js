@@ -14,10 +14,10 @@ export default function NewMusic(props) {
         if (props.usuario.id_usuario) {
 
             async function getTopMusics() {
-                setloaded(false);
-                const response = await api.get("/Usuario/null/getTopTracks");
-                setMusics(response.data.data);
-                setloaded(true);
+                // setloaded(false);
+                // const response = await api.get("/Usuario/null/getTopTracks");
+                // setMusics(response.data.data);
+                // setloaded(true);
             }
 
             if (!props.usuario.bl_integracao) {
@@ -32,7 +32,7 @@ export default function NewMusic(props) {
     }, [props.usuario]);
 
     async function addMusic(id_music) {
-        api.post('/Music/', {
+        api.post('/Playlist/newMusic/', {
             'id_spotify': id_music,
             'id_playlist': props.params.id_playlist
         });
@@ -42,7 +42,7 @@ export default function NewMusic(props) {
 
     async function buscaMusica(source) {
         setloaded(false);
-        const response = await api.get('/Musics/' + source);
+        const response = await api.get('/Music/' + source);
         setMusics(response.data.data);
         setloaded(true);
     }
