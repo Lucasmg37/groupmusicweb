@@ -5,6 +5,7 @@ import UsuarioService from "../../services/UsuarioService";
 
 //Componentes
 import SuccesComponent from "../../components/Login/SuccessComponent";
+import AlertLoginComponent from "../../components/Login/AlertLoginComponent";
 
 export default function Recovery({history}) {
 
@@ -13,7 +14,7 @@ export default function Recovery({history}) {
     const [senha, setSenha] = useState('');
     const [senhaConfirm, setSenhaConfirm] = useState('');
 
-    const [erro, setErro] = useState('');
+    const [alert, setAlert] = useState('');
     const [logging, setLogging] = useState(false);
     const [step, setStep] = useState(0);
 
@@ -22,8 +23,9 @@ export default function Recovery({history}) {
         setLogging(true);
         UsuarioService.recoveryPassword(email).then(() => {
             setStep(1);
+            setAlert("");
         }).catch(erro => {
-            setErro(erro.message);
+            setAlert(erro.message);
         }).finally(() => {
             setLogging(false);
         });
@@ -31,10 +33,10 @@ export default function Recovery({history}) {
 
     function salvarNovaSenha(e) {
         e.preventDefault();
-        setErro("");
+        setAlert("");
 
         if (senha !== senhaConfirm) {
-            setErro("Senhas diferem entre si!");
+            setAlert("Senhas diferem entre si!");
             return false;
         }
 
@@ -42,8 +44,9 @@ export default function Recovery({history}) {
 
         UsuarioService.validateRecovery(email, code, senha).then(() => {
             setStep(2);
+            setAlert("");
         }).catch(erro => {
-            setErro(erro.message);
+            setAlert(erro.message);
         }).finally(() => {
             setLogging(false);
         })
@@ -128,15 +131,14 @@ export default function Recovery({history}) {
                 />
             )}
 
-            <div className={erro !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erro}</div>
+            <AlertLoginComponent
+                text={alert}
+            />
 
-            {step > 0 && (
-                <div>
+            <div className="group-button-login mt-20">
+                {step > 0 && (
                     <button onClick={() => setStep(step - 1)} className="link-button">Voltar</button>
-                </div>
-            )}
-
-            <div>
+                )}
                 <button onClick={() => history.push("/login")} className="link-button">Acessar minha conta</button>
             </div>
 

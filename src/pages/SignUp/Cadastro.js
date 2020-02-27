@@ -7,6 +7,7 @@ import {spotify} from "../../config/config";
 //Componentes
 import SuccesComponent from "../../components/Login/SuccessComponent";
 import ValidateAcountComponent from "../../components/Login/ValidateAcountComponent";
+import AlertLoginComponent from "../../components/Login/AlertLoginComponent";
 
 //Services
 import SignUpService from "../../services/SignUpService";
@@ -23,14 +24,14 @@ export default function Cadastro({history}) {
     const [logging, setLogging] = useState(false);
     const [signUpStatus, setSignUpStatus] = useState(false);
     const [finish, setFinish] = useState(false);
-    const [erro, setErro] = useState('');
+    const [alert, setAlert] = useState('');
 
     function signUpBySpotify(response) {
         SignUpService.bySpotify(response).then(response => {
             localStorage.setItem('st_token', response.data.st_token);
             history.push("/");
         }).catch(erro => {
-            setErro(erro.message);
+            setAlert(erro.message);
         });
     }
 
@@ -38,9 +39,9 @@ export default function Cadastro({history}) {
         setLogging(true);
         UsuarioService.activate(code, id_usuario).then(response => {
             setFinish(true);
-            setErro("");
+            setAlert("");
         }).catch(erro => {
-            setErro(erro.message);
+            setAlert(erro.message);
         }).finally(() => {
             setLogging(false);
         });
@@ -50,7 +51,7 @@ export default function Cadastro({history}) {
         e.preventDefault();
 
         if (senha !== repeatSenha) {
-            setErro("As senhas se diferem entre si.");
+            setAlert("As senhas se diferem entre si.");
             return false;
         }
 
@@ -59,9 +60,9 @@ export default function Cadastro({history}) {
         SignUpService.signUp(email, senha, nome).then(response => {
             setIdUsuario(response.data.id_usuario);
             setSignUpStatus(true);
-            setErro("");
+            setAlert("");
         }).catch(erro => {
-            setErro(erro.message);
+            setAlert(erro.message);
         }).finally(() => {
             setLogging(false);
         })
@@ -151,9 +152,13 @@ export default function Cadastro({history}) {
                 </div>
             )}
 
-            <div className={erro !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erro}</div>
+            <div className="w100">
+                <AlertLoginComponent
+                    text={alert}
+                />
+            </div>
 
-            <div>
+            <div className="group-button-login mt-20">
                 <button onClick={() => history.push("/login")} className="link-button">Já tenho uma conta.</button>
             </div>
 

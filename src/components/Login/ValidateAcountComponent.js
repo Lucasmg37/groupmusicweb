@@ -8,6 +8,8 @@ export default function ValidateAcountComponent(props) {
         <div className="w100">
             <h1>Informe o código de verificação</h1>
 
+            <p className="p-login">{props.info}</p>
+
             <input
                 type="text"
                 className="input-primary"
@@ -21,7 +23,7 @@ export default function ValidateAcountComponent(props) {
                 onClick={() => props.buttonAction(code)}
                 className="button-primary"
             >
-                {!props.logging ? (<span>Salvar</span>) : (
+                {!props.logging ? (<span>Confirmar</span>) : (
                     <i className="fa fa-spinner loading-spinner fa-2x"/>)}
             </button>
         </div>

@@ -54,7 +54,7 @@ export default function Home({ history }) {
 
                                 {playlists.map(playlist => (
 
-                                    <li className="animate-up-opacity" key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
+                                    <li className="" key={playlist.id_playlist} onClick={() => openPlaylist(playlist.id_playlist)}>
                                         <div className="capa">
                                             <img src={playlist.st_capa} />
                                         </div>

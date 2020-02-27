@@ -1,20 +1,25 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import SpotifyLogin from "react-spotify-login";
+
+import './Login.scss'
 
 import logo from '../../assets/img/logo.png';
+import {spotify} from "../../config/config";
 
-import SpotifyLogin from "react-spotify-login";
 import LoginService from "../../services/LoginService";
 import UsuarioService from "../../services/UsuarioService";
-import {spotify} from "../../config/config";
+
+import ValidateAcountComponent from "../../components/Login/ValidateAcountComponent";
+import AlertLoginComponent from "../../components/Login/AlertLoginComponent";
 
 export default function Login({history}) {
 
     const [id_usuario, setIdUsuario] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     const [logging, setLogging] = useState(false);
-    const [erroLogin, setErroLogin] = useState('');
+    const [alert, setAlert] = useState('');
     const [countNotActivate, setCountNotActivate] = useState(false);
 
     function loginBySpotifySuccess(response) {
@@ -23,17 +28,28 @@ export default function Login({history}) {
                 window.location.href = "http://localhost:3000";
             }
         ).catch(error => {
-            setErroLogin(error.message);
+            setAlert(error.message);
         });
 
     }
 
+    function activateAccount(code) {
+        setLogging(true);
+        UsuarioService.activate(code, id_usuario).then(response => {
+            setCountNotActivate(false);
+            setAlert("");
+        }).catch(erro => {
+            setAlert(erro.message);
+        }).finally(() => {
+            setLogging(false);
+        });
+    }
+
     function sendActivateEmail() {
         UsuarioService.resendEmailActivate(id_usuario).then(() => {
-            setErroLogin("Email reenviado!");
-            setCountNotActivate("");
+            setAlert("Email reenviado!");
         }).catch(error => {
-            setErroLogin(error.message)
+            setAlert(error.message);
         });
     }
 
@@ -53,10 +69,10 @@ export default function Login({history}) {
             localStorage.setItem('st_token', response.data.st_token);
             window.location.href = "http://localhost:3000";
         }).catch(error => {
-            setErroLogin(error.message);
+            setAlert(error.message);
 
             if (error.data && !error.data.bl_ativo) {
-                setErroLogin('');
+                setAlert('');
                 setCountNotActivate(true);
                 setIdUsuario(error.data.id_usuario);
             }
@@ -68,58 +84,93 @@ export default function Login({history}) {
     }
 
     return (
-        <div className="container-login animate-up-opacity">
+        <div className="container-center animate-up-opacity">
 
-            <form className="form-login" onSubmit={login}>
-                <img src={logo} alt="Group List"/>
+            {!countNotActivate && (
+                <div>
+                    <form className="w100" onSubmit={login}>
+                        <img className="w100" src={logo} alt="Group List"/>
 
-                <input
-                    type="text" placeholder="E-mail"
-                    required
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
+                        <input
+                            className="input-primary"
+                            type="text"
+                            placeholder="E-mail"
+                            required
+                            value={username}
+                            onChange={e => setUsername(e.target.value)}
+                        />
 
-                <input
-                    type="password" placeholder="Senha"
-                    required
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
+                        <input
+                            className="input-primary"
+                            type="password"
+                            placeholder="Senha"
+                            required
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                        />
 
-                <button type="submit">
-                    {!logging ? (<span>Entrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"/>)}
-                </button>
+                        <button
+                            className="button-primary"
+                            type="submit">
+                            {!logging ? (<span>Entrar</span>) : (<i className="fa fa-spinner loading-spinner fa-2x"/>)}
+                        </button>
 
-            </form>
+                    </form>
 
-            <div className='btn-connect-spotify'>
-                <SpotifyLogin
-                    clientId={spotify.clientId}
-                    redirectUri={spotify.redirectUri}
-                    onSuccess={loginBySpotifySuccess}
-                    onFailure={() => {
-                    }}
-                    scope={spotify.scopes}>
-                    <span>Entrar com o Spotify <i className='fab fa-spotify'/></span>
-                </SpotifyLogin>
-            </div>
+                    <div className='btn-connect-spotify'>
+                        <SpotifyLogin
+                            clientId={spotify.clientId}
+                            redirectUri={spotify.redirectUri}
+                            onSuccess={loginBySpotifySuccess}
+                            onFailure={() => {
+                            }}
+                            scope={spotify.scopes}>
+                            <span>Entrar com o Spotify <i className='fab fa-spotify'/></span>
+                        </SpotifyLogin>
+                    </div>
 
-            <div className={erroLogin !== '' ? 'erro-box erro-box-show' : 'erro-box'}>{erroLogin}</div>
+                    <AlertLoginComponent
+                        text={alert}
+                    />
 
-            <div className={countNotActivate ? 'erro-box erro-box-show' : 'erro-box'}>
-                Enviamos um email de ativação para o seu email.<br/>
-                <button onClick={() => sendActivateEmail()}>Clique aqui para receber um novo link de ativação</button>
-            </div>
+                    <div className="group-button-login mt-20">
+                        <button onClick={() => history.push("/signup")} className="link-button">Não tenho uma conta.
+                        </button>
+                        <button onClick={() => history.push("/recovery")} className="link-button">Esqueci a minha senha.
+                        </button>
+                    </div>
 
-            <div>
-                <button onClick={() => history.push("/signup")} className="link-button">Não tenho uma conta.</button>
-            </div>
+                </div>
+            )}
 
-            <div>
-                <button onClick={() => history.push("/recovery")} className="link-button">Esqueci a minha senha.
-                </button>
-            </div>
+            {countNotActivate && (
+                <div>
+                    <ValidateAcountComponent
+                        logging={logging}
+                        info="Enviamos um email de ativação para o seu email."
+                        buttonAction={(code) => activateAccount(code)}
+                    />
+
+                    <button
+                        onClick={() => sendActivateEmail()}
+                        className="button-secundary"
+                    >Receber novo código
+                    </button>
+
+                    <AlertLoginComponent
+                        text={alert}
+                    />
+
+                    <div className="group-button-login mt-20">
+                        <button onClick={() => {
+                            setCountNotActivate(false);
+                            setAlert("");
+                        }} className=" link-button">Cancelar
+                        </button>
+                    </div>
+
+                </div>
+            )}
 
         </div>
     );
