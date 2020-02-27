@@ -22,7 +22,7 @@ export default function Perfil(props) {
 
         async function verificaIntegracao() {
 
-            await api.get('/Config').then(response => {
+            await api.get('/Usuario/getConfig').then(response => {
                 setBl_sincronizaclone(response.data.data.bl_sincronizaclone);
                 setBl_atualizaspotify(response.data.data.bl_atualizaspotify);
                 setId_config(response.data.data.id_config);
@@ -38,7 +38,7 @@ export default function Perfil(props) {
 
 
     const onSuccess = async function (response) {
-        await api.post("/Spotify", response);
+        await api.post("/Integracao", response);
         props.setUsuario();
     };
 
@@ -47,7 +47,7 @@ export default function Perfil(props) {
     };
 
     const saveConfigsIntegracao = () => {
-        api.post("/Config", {
+        api.post("/Usuario/saveConfig", {
             id_config,
             bl_atualizaspotify,
             bl_buscamudancasspotify,
@@ -57,7 +57,7 @@ export default function Perfil(props) {
     };
 
     async function desconectSpotify() {
-        await api.post("/Spotify/null/desconect");
+        await api.delete("/Integracao");
         props.setUsuario();
     }
 

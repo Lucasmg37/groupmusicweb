@@ -25,24 +25,24 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.button-primary {
-    text-align: center;
-    padding: 15px 5px;
-    margin-top: 10px;
-    border: 0;
-    font-size: 1.1em;
-    border-radius: 5px;
-    background: #1ED760;
-    color: #222;
-    width: 100%;
-    cursor: pointer;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: all .2s;
-}
+/*.button-primary {*/
+/*    text-align: center;*/
+/*    padding: 15px 5px;*/
+/*    margin-top: 10px;*/
+/*    border: 0;*/
+/*    font-size: 1.1em;*/
+/*    border-radius: 5px;*/
+/*    background: #1ED760;*/
+/*    color: #222;*/
+/*    width: 100%;*/
+/*    cursor: pointer;*/
+/*    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+/*    transition: all .2s;*/
+/*}*/
 
-.button-primary:hover {
-    background: rgb(26, 187, 83);
-}
+/*.button-primary:hover {*/
+/*    background: rgb(26, 187, 83);*/
+/*}*/
 
 .input-toggle {
     display: flex;

@@ -48,7 +48,7 @@ export default function NewMusic(props) {
     }
 
     async function playMusicDirectSpotify(id_spotify) {
-        await api.post("/Playlist/" + id_spotify + "/playMusicPlaylistDirect");
+        await api.put("/Player/playTrack/" + id_spotify);
     }
 
     return (

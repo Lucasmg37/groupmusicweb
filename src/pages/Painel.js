@@ -32,13 +32,13 @@ export default function Painel({history}) {
     }
 
     async function getCurrentPlayer() {
-        await api.get('/Spotify/null/getCurrentPlayer').then(response => {
-            setCurrentPlayerArtists(response.data.data.resumo.artists);
-            setCurrentPlayerName(response.data.data.resumo.name);
-            setDuration_ms(response.data.data.resumo.progress_ms);
-            setProgress_ms(response.data.data.resumo.duration_ms);
-            setIsCurrentPlayer(response.data.data.isPlayling);
-            setProgressForCent((+response.data.data.resumo.progress_ms * 100) / response.data.data.resumo.duration_ms);
+        await api.get('/Player/getCurrent').then(response => {
+            setCurrentPlayerArtists(response.data.data.artists);
+            setCurrentPlayerName(response.data.data.name);
+            setDuration_ms(response.data.data.progress_ms);
+            setProgress_ms(response.data.data.duration_ms);
+            setIsCurrentPlayer(response.data.data.is_playing);
+            setProgressForCent((+response.data.data.progress_ms * 100) / response.data.data.duration_ms);
 
         });
     }
@@ -85,10 +85,10 @@ export default function Painel({history}) {
 
 
     async function getInterval() {
-
-        // await setInterval(() => {
-        //     getCurrentPlayer();
-        // }, 5000);
+        getCurrentPlayer();
+        await setInterval(() => {
+            // getCurrentPlayer();
+        }, 30000);
 
     }
 
@@ -122,7 +122,7 @@ export default function Painel({history}) {
                     <li onClick={logout}><i className="fa fa-door-open"/> <span>Sair</span></li>
                 </ul>
 
-                <div className={+integracao.bl_integracao === 1 && isCurrentPlayer ? 'playing opacity' : 'playing'}>
+                <div className={+usuario.bl_integracao === 1 && isCurrentPlayer ? 'playing opacity' : 'playing'}>
                     <div className="linha-de-reproducao">
                         <div className="reproduzido" style={{width: progressForCent + '%'}}/>
                     </div>
