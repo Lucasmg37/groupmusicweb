@@ -14,7 +14,7 @@ export default function PlaylistSource({history}) {
 
     useEffect(() => {
         async function buscaTopPlaylists() {
-            const response = await api.get("Acesso/null/getTopPlaylists");
+            const response = await api.get("Playlist/getTopPlaylists");
             setPlaylists(response.data.data);
             setLoaded(true);
         }
@@ -24,8 +24,10 @@ export default function PlaylistSource({history}) {
     }, []);
 
     async function buscaPlaylist(search) {
-        const response = await api.get("Playlist/null/getByName?search=" + search);
-        setPlaylists(response.data.data);
+        if (search) {
+            const response = await api.get("Playlist/getByName?search=" + search);
+            setPlaylists(response.data.data);
+        }
     }
 
     return (

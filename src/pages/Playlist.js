@@ -22,7 +22,7 @@ export default function Playlist(props) {
     }
 
     async function clonarPlaylist(id_musicplaylist) {
-        await api.post("/Playlist/" + id_musicplaylist + "/clone").then(
+        await api.post("/Playlist/makeCopy/" + id_musicplaylist).then(
             response => {
                 props.history.push("/playlist/" + response.data.data.id_playlist);
             }
@@ -31,7 +31,7 @@ export default function Playlist(props) {
     }
 
     function playPlaylist(id_playlis) {
-        api.post("/Playlist/" + id_playlis + "/play")
+        api.put("/Player/playPlaylist/" + id_playlis)
     }
 
     function selectMusic(id_musicplaylist) {
@@ -63,7 +63,7 @@ export default function Playlist(props) {
     }
 
     async function playPlaylistMusic(id_musicplaylist) {
-        api.post("/Playlist/" + id_musicplaylist + "/playMusicPlaylist");
+        api.put("/Player/playTrack/" + id_musicplaylist);
     }
 
     useEffect(() => {
@@ -144,7 +144,7 @@ export default function Playlist(props) {
                             text: 'Reproduzir',
                             show: +props.usuario.bl_premium === 1 && +playlist.bl_sincronizado === 1,
                             icon: 'fa-play',
-                            action: () => playPlaylist(playlist.id_playlist)
+                            action: () => playPlaylist(playlist.st_idspotify)
 
                         },
                         {
@@ -171,7 +171,7 @@ export default function Playlist(props) {
                                     >
                                         <ListMedia
                                             hoverCapa={props.usuario.bl_premium}
-                                            clickCapa={() => playPlaylistMusic(music.id_musicplaylist)}
+                                            clickCapa={() => playPlaylistMusic(music.id_spotify)}
                                             playlist={playlist}
                                             usuario={props.usuario.id_usuario}
                                             music={music}

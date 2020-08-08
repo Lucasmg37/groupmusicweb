@@ -91,7 +91,7 @@ export default function Library({ history }) {
         setButtons(dataButtons);
 
         async function loadPlaylist() {
-            const response = await api.get("/Playlist/NULL/getPlaylistsUser");
+            const response = await api.get("/Playlist/myPlaylists");
             setPlaylists(response.data.data);
             setLoaded(true);
         }

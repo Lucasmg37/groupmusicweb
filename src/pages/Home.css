@@ -3,7 +3,7 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 10px;
-    margin-top: 50px; 
+    margin-top: 50px;
 }
 
 .listagem ul li {
@@ -36,7 +36,7 @@
     color: #eee
 }
 
-.listagem ul li .footer{
+.listagem ul li .footer {
     flex: 1;
     background: #fff;
     border-radius: 0 0 5px 5px;
@@ -44,7 +44,7 @@
     padding: 10px 5px;
 }
 
-.listagem ul li .footer strong{
+.listagem ul li .footer strong {
     font-size: 1.2em;
     color: #222;
 }
@@ -55,17 +55,17 @@
 }
 
 .animate-up-opacity {
-    animation: .8s animate-up-opacity ease-in-out;
+    animation: .5s animate-up-opacity ease-in-out;
 }
 
-@keyframes animate-up-opacity{
+@keyframes animate-up-opacity {
     from {
-        transform: translateY(20px);
+        margin-top: -200px;
         opacity: 0;
     }
 
     to {
-        transform: translateY(0);
+        margin-top: 0;
         opacity: 1;
     }
 }
