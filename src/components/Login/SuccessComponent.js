@@ -1,16 +1,12 @@
 import React from 'react';
 
-export default function SuccesComponent(props) {
-
-    return (
-        <div>
-            <h1>{props.titulo}</h1>
-            <button
-                onClick={props.buttonAction}
-                className="button-primary">
-                {props.buttonText}
-            </button>
-        </div>
-    );
-
+export default function SuccesComponent({ titulo, buttonAction, buttonText }) {
+  return (
+    <div>
+      <h1>{titulo}</h1>
+      <button type="button" onClick={buttonAction} className="button-primary">
+        {buttonText}
+      </button>
+    </div>
+  );
 }

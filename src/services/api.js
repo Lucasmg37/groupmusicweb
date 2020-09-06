@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
+
 const api = axios.create({
-    baseURL: "http://groupmusicapi.lucasjunior.com.br/Api/",
-    headers: {Authorization: `Bearer ${localStorage.getItem("st_token")}`}
+  baseURL: 'http://groupmusicapi.localhost:8000/Api/',
+  headers: { Authorization: `Bearer ${localStorage.getItem('st_token')}` },
 });
 
 export default api;
